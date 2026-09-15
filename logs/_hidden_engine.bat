@@ -1,0 +1,2 @@
+@echo off
+"C:\Users\polin\Desktop\ZapretTurkey\engine\winws.exe" --wf-tcp=443 --dpi-desync=multisplit --dpi-desync-split-pos=method,host --dpi-desync-repeats=1 --dpi-desync-autottl=1:4-10 --dpi-desync-skip-nosni=0 --dpi-desync-start=n2 --dpi-desync-cutoff=n5 --hostlist="C:\Users\polin\Desktop\ZapretTurkey\profiles\target-hosts.txt" --hostlist-exclude="C:\Users\polin\Desktop\ZapretTurkey\profiles\exclude-hosts.txt" > "C:\Users\polin\Desktop\ZapretTurkey\logs\engine_stdout.log" 2> "C:\Users\polin\Desktop\ZapretTurkey\logs\engine_stderr.log"
