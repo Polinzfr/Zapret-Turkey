@@ -1,0 +1,405 @@
+# Zapret Turkey - English language file
+# Format: KEY=Value
+# FORBIDDEN: do not use ! or % in any value - CMD swallows/breaks them.
+#            Use a placeholder like {pct} if you need a percent sign.
+# This file must be saved as UTF-8 WITHOUT a BOM.
+
+# ---------- First run: language selection ----------
+LANG_SELECT_TITLE=Dil secin / Please select a language
+LANG_SELECT_PROMPT=Secim / Choice [1-2]:
+LANG_SELECT_OPT_TR=[1] Turkce
+LANG_SELECT_OPT_EN=[2] English
+LANG_SELECT_INVALID=Invalid choice, please try again.
+
+# ---------- Admin check ----------
+ADMIN_NEEDED=Administrator privileges required.
+ADMIN_PROMPT=Restart as administrator? [Y/N]:
+ADMIN_DENIED_1=Start/Stop and service operations will not work without administrator rights.
+
+# ---------- File checks ----------
+ERR_ENGINE_NOT_FOUND=[ERROR] engine\winws.exe not found. Expected path:
+ERR_WINDIVERT_NOT_FOUND=[ERROR] engine\WinDivert64.sys not found. Expected path:
+
+# ---------- Main menu title / status lines ----------
+APP_TITLE=ZAPRET TURKEY - Turkey DPI Bypass Utility
+LBL_STATUS=Status
+LBL_PROFILE=Profile
+LBL_DNS_MODE=DNS mode
+LBL_SERVICE=Service
+STATUS_RUNNING=RUNNING
+STATUS_STOPPED=STOPPED
+SVC_INSTALLED=INSTALLED
+SVC_NOT_INSTALLED=NOT INSTALLED
+
+# ---------- Main menu options ----------
+MENU_START=Start
+MENU_STOP=Stop
+MENU_CHANGE_PROFILE=Profile - change / export / import
+MENU_AUTO_TEST=Auto Test
+MENU_SERVICE_SETTINGS=Service Settings
+MENU_DIAGNOSTICS=Diagnostics
+MENU_SETTINGS=Settings
+MENU_LOGS=Logs
+MENU_DEBUG=Debug Mode
+MENU_EXIT=Exit
+PROMPT_CHOICE=Choice:
+
+# ---------- Exit ----------
+EXIT_SERVICE_CONTINUES=The Zapret Turkey service will keep running in the background.
+EXIT_WINWS_STILL_RUNNING=winws is still running. Stop it? [Y/N]:
+EXIT_WINWS_KILLED=winws stopped.
+EXIT_DNS_UNTOUCHED=Your DNS settings were not changed.
+EXIT_CLOSING=Closing Zapret Turkey...
+
+# ---------- Profile display names (default; .conf NAME= overrides these) ----------
+PROFILE_STABLE_NAME=Turkey Stable (HostFakeSplit)
+PROFILE_COMPATIBILITY_NAME=Compatibility (Fake)
+PROFILE_STRONG_NAME=Strong (MultiSplit)
+PROFILE_UNKNOWN_NAME=Unknown profile
+
+# ---------- Start (START_ENGINE) ----------
+START_OK=Profile started.
+START_CMDLINE_LABEL=Command line:
+START_RESTART_HINT=Fully close and reopen apps like Discord and Roblox to test.
+START_FAILED=START FAILED
+START_FAILED_PROFILE_LABEL=Profile:
+START_FAILED_REASON_LABEL=Reason :
+START_FAILED_PATH_LABEL=Path   :
+REASON_PROFILE_PARSE_FAILED_HINT=No "ARGS=..." line found in the profile file, or it is empty.
+REASON_ENGINE_MISSING_HINT=Expected path:
+REASON_WINDIVERT_MISSING_HINT=WinDivert.dll or WinDivert64.sys is missing from the engine\ folder.
+REASON_NOT_ADMIN_HINT=The program must be restarted with administrator privileges.
+REASON_ENGINE_EXITED_CMDLINE_LABEL=Command line:
+REASON_ENGINE_EXITED_STDERR_LABEL=stderr      :
+REASON_ENGINE_EXITED_FULL_LOG=Full stderr at:
+REASON_UNKNOWN_STATE_1=winws.exe is neither running nor did it leave an exit code.
+REASON_UNKNOWN_STATE_2=Use the Diagnostics menu (option 6).
+
+# ---------- Stop (STOP_ENGINE) ----------
+STOP_OK=winws stopped.
+STOP_ALREADY_STOPPED=winws was not running.
+
+# ---------- Change Profile (CHANGE_PROFILE) ----------
+CHANGE_PROFILE_PROMPT=Select a profile:
+CHANGE_PROFILE_CANCEL=Cancel
+CHANGE_PROFILE_DONE=Profile changed:
+CHANGE_PROFILE_RESTART_PROMPT=winws is currently running. Restart it with the new profile? [Y/N]:
+CHANGE_PROFILE_SERVICE_NOTE_1=Note: if installed as a service, run
+CHANGE_PROFILE_SERVICE_NOTE_2=Service Settings - Install Service again for the new profile to take effect.
+
+# ---------- Auto Test ----------
+AUTOTEST_TITLE=Automatic profile test
+AUTOTEST_INFO_1=winws will be restarted a few times during this process.
+AUTOTEST_INFO_2=Test scope: only a basic HTTPS/TCP connectivity check - can Discord, Roblox,
+AUTOTEST_INFO_3=and Steam domains be reached. In-app behavior
+AUTOTEST_INFO_4=(messaging, CDN, WebSocket, etc.) is NOT checked by this test.
+AUTOTEST_CURL_MISSING=[ERROR] curl.exe not found. Windows 10 1803+ / Windows 11 required.
+AUTOTEST_CONTINUE_PROMPT=Continue? [Y/N]:
+AUTOTEST_TESTING_LABEL=--- Testing:
+AUTOTEST_START_FAILED_LABEL=Failed to start. Reason:
+AUTOTEST_CONNECTING=winws is running, testing connectivity...
+AUTOTEST_PASS=PASS
+AUTOTEST_FAIL=FAIL (connectivity test failed)
+AUTOTEST_RESULTS_TITLE=RESULTS
+AUTOTEST_RESULT_STABLE=STABLE        =
+AUTOTEST_RESULT_COMPAT=COMPATIBILITY =
+AUTOTEST_RESULT_STRONG=STRONG        =
+AUTOTEST_RECOMMENDED=Recommended profile:
+AUTOTEST_NONE_PASSED=No profile passed the basic connectivity test.
+AUTOTEST_NONE_PASSED_HINT=Use the Diagnostics menu (option 6) to check your network/WinDivert status.
+AUTOTEST_SAVE_PROMPT=Save this profile as the default? [Y/N]:
+AUTOTEST_SAVED=Saved.
+
+# ---------- Service Settings ----------
+SVC_MENU_TITLE=SERVICE SETTINGS
+SVC_MENU_STATUS_LABEL=Service status:
+SVC_MENU_INSTALL=[1] Install Service       (with current profile, auto-start)
+SVC_MENU_UNINSTALL=[2] Uninstall Service
+SVC_MENU_START=[3] Start Service
+SVC_MENU_STOP=[4] Stop Service
+SVC_MENU_BACK=[0] Back
+
+# ---------- Settings ----------
+SETTINGS_TITLE=SETTINGS
+SETTINGS_DNS_LABEL=DNS mode   :
+SETTINGS_DNS_DEFAULT_NOTE=(default: system - nothing is changed)
+SETTINGS_DEBUG_LABEL=Debug mode :
+SETTINGS_LANG_LABEL=Language   :
+SETTINGS_OPT_DNS_LEAVE=[1] Leave DNS alone (revert to default / update tag)
+SETTINGS_OPT_DNS_CLOUDFLARE=[2] DNS Assistant (Cloudflare or Google) - changes your network
+SETTINGS_OPT_DNS_DHCP=[3] Reset DNS to automatic (DHCP)
+SETTINGS_OPT_DEBUG_TOGGLE=[4] Toggle debug tag On/Off
+SETTINGS_OPT_LANG=[5] Change language (Turkish / English)
+SETTINGS_BACK=[0] Back
+SETTINGS_DNS_TAG_UPDATED=Tag updated. This option does not touch the system setting.
+DNS_CLOUDFLARE_WARN=WARNING: This changes the DNS server setting on your Windows network.
+DNS_CLOUDFLARE_INFO_1=This is NOT Zapret Turkey's default behavior; it is only applied if
+DNS_CLOUDFLARE_INFO_2=you choose it yourself. Your adapter list is below:
+DNS_ADAPTER_PROMPT=Enter the full adapter name (e.g. Ethernet, Wi-Fi):
+DNS_CLOUDFLARE_CONFIRM=Use this adapter? [Y/N]:
+DNS_CLOUDFLARE_DONE=DNS configured. Use Settings - [3] to revert.
+DNS_DHCP_PROMPT=Enter the full name of the adapter to revert to DHCP:
+DNS_DHCP_DONE=DNS reverted to automatic (DHCP).
+# ---------- DNS Assistant (auto-detect + Cloudflare/Google + IPv6) ----------
+DNS_ASSIST_DETECTING=Detecting your active network adapter...
+DNS_ASSIST_FOUND_ONE=Detected adapter:
+DNS_ASSIST_FOUND_MULTI=Multiple connected adapters found. Choose one:
+DNS_ASSIST_NONE_FOUND=Could not auto-detect a connected adapter.
+DNS_ASSIST_MANUAL_FALLBACK=Enter the adapter name manually instead:
+DNS_PROVIDER_PROMPT=Choose a DNS provider:
+DNS_PROVIDER_CLOUDFLARE=[1] Cloudflare - 1.1.1.1 / 1.0.0.1
+DNS_PROVIDER_GOOGLE=[2] Google - 8.8.8.8 / 8.8.4.4
+DNS_PROVIDER_CANCEL=[0] Cancel
+DNS_IPV6_DETECTED=This adapter also has a real IPv6 address.
+DNS_IPV6_OFFER_PROMPT=Set IPv6 DNS too (recommended)? [Y/N]:
+DNS_IPV6_NONE=No real IPv6 address found on this adapter - IPv6 DNS would not be used, so it is skipped.
+DNS_ASSIST_APPLYING=Applying DNS settings...
+DNS_ASSIST_VERIFY_TITLE=Verifying...
+DNS_ASSIST_VERIFY_LABEL=discord.com now resolves to:
+DNS_ASSIST_DONE=Done. Re-run Diagnostics or Auto Test to confirm.
+DEBUG_TAG_OFF=Debug tag turned off.
+DEBUG_TAG_ON=Debug tag turned on.
+
+# ---------- Logs ----------
+LOGS_TITLE=LOGS
+LOGS_OPT_SHOW=[1] Show recent logs (app.log)
+LOGS_OPT_OPEN_FOLDER=[2] Open logs folder
+LOGS_OPT_ERRORS=[3] Show recent errors
+LOGS_OPT_STDERR=[4] Show recent engine stderr
+LOGS_BACK=[0] Back
+LOGS_NONE_YET=No logs yet.
+LOGS_STDERR_NONE_YET=No engine stderr recorded yet.
+
+# ---------- Debug Mode ----------
+DEBUG_TITLE=DEBUG MODE - Live Status
+DEBUG_ROOT_LABEL=ROOT dir          :
+DEBUG_ENGINE_DIR_LABEL=ENGINE_DIR       :
+DEBUG_PROFILE_DIR_LABEL=PROFILE_DIR      :
+DEBUG_LOG_DIR_LABEL=LOG_DIR          :
+DEBUG_PROFILE_ID_LABEL=Selected profile :
+DEBUG_PROFILE_NAME_LABEL=Profile name     :
+DEBUG_PROFILE_FILE_LABEL=Profile file     :
+DEBUG_FILE_EXISTS=  -> file EXISTS
+DEBUG_FILE_MISSING=  -> file MISSING
+DEBUG_PARSED_PORT_LABEL=Parsed PORT      :
+DEBUG_PARSED_ARGS_LABEL=Parsed ARGS      :
+DEBUG_ADMIN_LABEL=Admin rights     :
+DEBUG_YES=YES
+DEBUG_NO=NO
+DEBUG_WINWS_STATUS_LABEL=winws status     :
+DEBUG_WINWS_RUNNING=RUNNING
+DEBUG_WINWS_NOT_RUNNING=NOT RUNNING
+DEBUG_SVC_STATUS_LABEL=Service status   :
+DEBUG_LAST_CALL_TITLE=--- Last ENGINE_START_CORE call this session ---
+DEBUG_CMDLINE_LABEL=Command line :
+DEBUG_RESULT_LABEL=Result       :
+DEBUG_EXITCODE_LABEL=Exit code    :
+DEBUG_STDERR_LABEL=stderr       :
+DEBUG_NO_CALL_YET=Start / Auto Test has not been run yet this session.
+DEBUG_LOG_FILES_LABEL=Log files:
+
+# ---------- diagnostics.bat / install-service.bat / uninstall-service.bat ----------
+DIAG_TITLE=DIAGNOSTICS
+DIAG_ADMIN_LABEL=Administrator rights :
+DIAG_ENGINE_LABEL=winws.exe           :
+DIAG_WD_SYS_LABEL=WinDivert64.sys     :
+DIAG_WD_DLL_LABEL=WinDivert.dll       :
+DIAG_STATUS_PRESENT=Found
+DIAG_STATUS_MISSING=Missing
+DIAG_STATUS_NONE=None
+DIAG_PROFILE_LABEL=Selected profile     :
+DIAG_DNSMODE_LABEL=DNS mode (app)       :
+DIAG_WINWS_STATUS_LABEL=winws status         :
+DIAG_SVC_STATUS_LABEL=Service status       :
+DIAG_CONFLICT_SECTION=--- Possible WinDivert-based services ---
+DIAG_CONFLICT_FOUND=[!] Found:
+DIAG_CONFLICT_HINT=(this may be a WinDivert-based tool other than Zapret Turkey - do not run them at the same time)
+DIAG_CONFLICT_NONE=No known conflicting service found.
+DIAG_CONN_SECTION=--- Connectivity ---
+DIAG_IPV4_LABEL=IPv4 address        :
+DIAG_IPV6_LABEL=IPv6 address        :
+DIAG_TEST_SECTION=--- Connectivity tests (via curl) ---
+DIAG_CURL_MISSING=curl.exe not found, connectivity tests skipped.
+DIAG_TEST_OK=OK
+DIAG_TEST_FAIL=FAILED
+DIAG_TEST_UNKNOWN=UNKNOWN
+DIAG_REPORT_PROMPT=Generate a diagnostic report (sanitized TXT)? [Y/N]:
+DIAG_REPORT_HEADER=Zapret Turkey - Diagnostic Report
+DIAG_REPORT_DATE_LABEL=Date:
+DIAG_REPORT_PROFILE_LABEL=Profile           :
+DIAG_REPORT_DNSMODE_LABEL=DNS mode          :
+DIAG_REPORT_ADMIN_LABEL=Administrator     :
+DIAG_REPORT_WINWS_LABEL=winws status      :
+DIAG_REPORT_SVC_LABEL=Service status    :
+DIAG_REPORT_IPV4_LABEL=IPv4              :
+DIAG_REPORT_IPV6_LABEL=IPv6              :
+DIAG_REPORT_CONFLICT_LABEL=WinDivert conflict:
+DIAG_REPORT_DISCORD_LABEL=Discord           :
+DIAG_REPORT_ROBLOX_LABEL=Roblox            :
+DIAG_REPORT_STEAM_LABEL=Steam             :
+DIAG_REPORT_HTTPS_LABEL=HTTPS (general)   :
+DIAG_REPORT_NOTE_1=Note: this report deliberately does NOT include your real IP
+DIAG_REPORT_NOTE_2=address, MAC address, computer name, username, or file paths.
+DIAG_REPORT_NOTE_3=If you know your ISP, you can add it manually when posting to
+DIAG_REPORT_NOTE_4=the GitHub Issue.
+DIAG_REPORT_DONE=Report created:
+# ---------- Diagnostics: DNS check ----------
+DIAG_DNS_SECTION=--- DNS check ---
+DIAG_DNS_FIRST_SERVER_LABEL=First DNS server in use:
+DIAG_DNS_SITE_LABEL=Site
+DIAG_DNS_SYSTEM_LABEL=System DNS
+DIAG_DNS_CLOUDFLARE_LABEL=Cloudflare DNS
+DIAG_DNS_MATCH=match
+DIAG_DNS_DIFFERENT=different
+DIAG_DNS_UNREACHABLE=Could not reach 1.1.1.1 to compare - DNS check skipped.
+DIAG_DNS_VERDICT_MODEM_BAD=Cause: your first DNS server appears to be your modem/router, and it is returning a different address for a well-known site. This is likely why some sites stay blocked even with the bypass running. Fix: Settings - DNS Assistant, and set Cloudflare or Google DNS.
+DIAG_DNS_VERDICT_MODEM_OK=Your modem/router DNS is answering correctly right now, but it is listed first and could start returning fake answers at any time. Not urgent, but using Settings - DNS Assistant is recommended as a precaution.
+DIAG_DNS_VERDICT_OTHER_DIFF=Your DNS answers differ from Cloudflare's, but your first DNS server does not look like your modem. Check for an active VPN, a proxy, or an entry in your hosts file.
+DIAG_DNS_VERDICT_OK=DNS looks fine - no action needed.
+DIAG_DNS_CDN_NOTE=Note: Roblox and Steam may legitimately return different addresses from different CDN servers - a mismatch there alone does not always mean DNS is broken.
+
+SVC_INSTALL_TITLE=ZAPRET TURKEY - Service Installation
+SVC_UNINSTALL_TITLE=ZAPRET TURKEY - Uninstall Service
+SVC_ADMIN_REQUIRED=[ERROR] This operation requires administrator privileges.
+SVC_ADMIN_HINT=Right-click - Run as Administrator and try again.
+SVC_ERR_ENGINE_MISSING=[ERROR] engine\winws.exe not found.
+SVC_ERR_PROFILE_MISSING=[ERROR] Profile file not found:
+SVC_ERR_NO_ARGS=[ERROR] The selected profile has no ARGS line.
+SVC_SELECTED_PROFILE_LABEL=Selected profile:
+SVC_ERR_CREATE_FAILED=[ERROR] Failed to create the service.
+SVC_INSTALL_DESC=Zapret Turkey - Turkey DPI Bypass (profile:
+SVC_INSTALLED_LABEL=Service installed and started:
+SVC_REINSTALL_NOTE_1=When you change the profile, you need to reinstall the service
+SVC_REINSTALL_NOTE_2=from this screen for the new parameters to take effect.
+SVC_NOT_INSTALLED_MSG=The service is not installed.
+SVC_UNINSTALLED_OK=Service removed:
+SVC_ERR_UNINSTALL_FAILED=[ERROR] Failed to remove the service.
+SVC_UNINSTALL_NOTE_1A=Note: this only removes the "
+SVC_UNINSTALL_NOTE_1B=" service.
+SVC_UNINSTALL_NOTE_2=The WinDivert driver may also be used by other software, so it
+SVC_UNINSTALL_NOTE_3=is NOT automatically removed here. If needed, use the Diagnostics
+SVC_UNINSTALL_NOTE_4=menu to check other WinDivert-based services.
+
+# ---------- Tools submenu ----------
+MENU_TOOLS=Tools
+TOOLS_TITLE=TOOLS
+TOOLS_OPT_DEBUG=[3] Debug Mode
+TOOLS_OPT_SITELIST=[1] Edit Site List
+TOOLS_OPT_TESTSITE=[2] Test a Specific Site
+TESTSITE_TITLE=TEST A SPECIFIC SITE
+TESTSITE_PROMPT=Enter the site to test (e.g. example.com):
+TESTSITE_EMPTY=Empty site name entered, cancelled.
+TESTSITE_NOT_RUNNING_WARN=Warning: winws is not currently running; this test will run without the bypass active.
+TESTSITE_TESTING=Testing:
+TESTSITE_PASS=Connection succeeded (PASS)
+TESTSITE_FAIL=Connection failed (FAIL)
+SITELIST_TARGET_LABEL=Target List (target-hosts.txt)
+SITELIST_EXCLUDE_LABEL=Exclude List (exclude-hosts.txt)
+SITELIST_EMPTY=(List is empty)
+SITELIST_OPT_SHOW=[1] Show List
+SITELIST_OPT_ADD=[2] Add a Site
+SITELIST_OPT_REMOVE=[3] Remove a Site
+SITELIST_ADD_PROMPT=Enter the site to add (e.g. example.com):
+SITELIST_ADD_DUPLICATE=This site is already in the list:
+SITELIST_ADD_DONE=Added:
+SITELIST_REMOVE_PROMPT=Enter the number of the site to remove:
+SITELIST_REMOVE_INVALID=Invalid number:
+SITELIST_REMOVE_DONE=Removed:
+SITELIST_RESTART_PROMPT=winws is currently running. Restart it now so the change takes effect? [Y/N]:
+SITELIST_RESTART_DONE=Restarted.
+
+# ---------- Profile menu: export / import / GitHub Issue report (main menu [3]) ----------
+PMENU_TITLE=PROFILE
+PMENU_OPT_CHANGE=[1] Change profile
+PMENU_OPT_EXPORT=[2] Export profile to a file
+PMENU_OPT_IMPORT=[3] Import profile from a file
+PMENU_OPT_REPORT=[4] GitHub Issue report - docs/ISS.md format
+PEXPORT_TITLE=EXPORT PROFILE
+PEXPORT_INFO=Saves the selected profile to a config file. Choose where to save it in the window that opens.
+PEXPORT_PROFILE_LABEL=Profile to export:
+PEXPORT_DIALOG_TITLE=Export profile
+PEXPORT_DIALOG_FAILED=The save window could not be opened. Type the full file path instead.
+PEXPORT_PATH_PROMPT=Full path to save to:
+PEXPORT_OVERWRITE_PROMPT=This file already exists. Overwrite it? [Y/N]:
+PEXPORT_CANCELLED=Cancelled, nothing was saved.
+PEXPORT_DONE=Profile saved:
+PEXPORT_FAILED=Could not write the file. Check the location and your permissions.
+IMPORT_TITLE=IMPORT PROFILE
+IMPORT_INFO=Reads ONLY the profile from a config file. DNS, debug and language are not imported.
+IMPORT_DIALOG_TITLE=Import profile
+IMPORT_DIALOG_FAILED=The file window could not be opened. Type the file path instead.
+IMPORT_PROMPT=Path to the file - you can drag it into this window:
+IMPORT_CANCELLED=No file selected, cancelled.
+IMPORT_NOT_FOUND=File not found:
+IMPORT_NO_PROFILE=No CURRENT_PROFILE line found in that file.
+IMPORT_BAD_PROFILE=Invalid profile name in the file:
+IMPORT_PROFILE_MISSING=This profile does not exist in the profiles folder:
+IMPORT_CURRENT_LABEL=Current profile :
+IMPORT_NEW_LABEL=Profile in file :
+IMPORT_ALREADY=The file has the same profile that is already selected, nothing to do.
+IMPORT_CONFIRM=Switch to this profile? [Y/N]:
+IMPORT_ABORTED=Cancelled, nothing was changed.
+REPORT_TITLE=GITHUB ISSUE REPORT
+REPORT_COLLECTING=Collecting information...
+REPORT_TESTING=winws is running - testing Discord, Roblox and Steam with curl...
+REPORT_NOT_TESTED=Discord/Roblox/Steam were NOT tested because winws is not running or curl is missing. Fill those lines in yourself.
+REPORT_COPY_HINT=Paste the block below into a GitHub Issue - format: docs/ISS.md. Fill in the empty fields, and only share it if the profile really works for you.
+REPORT_COPIED=The block was also copied to the clipboard.
+REPORT_COPY_FAILED=Could not copy to the clipboard - select and copy the block above by hand.
+REPORT_SAVE_PROMPT=Also save it to a file? [Y/N]:
+REPORT_DIALOG_TITLE=Save report
+REPORT_DIALOG_FAILED=The save window could not be opened, so the report was not saved to a file.
+REPORT_SAVED=Saved:
+
+# ---------- Start at logon (Service Settings [5]/[6]) ----------
+SVC_MENU_ASTART_ON=[5] Enable start at logon - no service needed
+SVC_MENU_ASTART_OFF=[6] Disable start at logon
+ASTART_STATUS_LABEL=Start at logon:
+ASTART_ON=ENABLED
+ASTART_OFF=DISABLED
+ASTART_SERVICE_CONFLICT=The Windows service is installed and already starts winws automatically at boot. Remove the service first if you prefer the logon task instead.
+ASTART_FAILED=Could not create the scheduled task. Make sure the app is running as administrator.
+ASTART_ENABLED=Enabled. winws will start hidden about 15 seconds after you log in.
+ASTART_NOTE=Use Stop to turn it off for the current session. Results are logged in logs\app.log. If you move this folder, disable and enable this again.
+ASTART_DISABLED=Disabled. The logon task was removed.
+ASTART_ALREADY_OFF=Start at logon was already disabled.
+ASTART_DELETE_FAILED=Could not remove the scheduled task. Run the app as administrator and try again.
+
+# ---------- Watchdog (Service Settings [7]/[8]) ----------
+SVC_MENU_WDOG_ON=[7] Enable watchdog - restart winws if it crashes
+SVC_MENU_WDOG_OFF=[8] Disable watchdog
+WDOG_STATUS_LABEL=Watchdog:
+WDOG_SERVICE_CONFLICT=The Windows service is installed. The watchdog only manages winws started by this app, so it is not enabled while the service exists.
+WDOG_FAILED=Could not create the scheduled task. Make sure the app is running as administrator.
+WDOG_ENABLED=Enabled. Every 2 minutes it checks winws and restarts it if it stopped unexpectedly.
+WDOG_NOTE=If you press Stop, winws is not restarted until you press Start again. It gives up after 3 failed restarts in a row. Closing winws in Task Manager counts as a crash and is restarted too. Results are logged in logs\app.log.
+WDOG_DISABLED=Disabled. The watchdog task was removed.
+WDOG_ALREADY_OFF=The watchdog was already disabled.
+WDOG_DELETE_FAILED=Could not remove the scheduled task. Run the app as administrator and try again.
+
+# ---------- VPN auto-pause (Service Settings [9]/[10], Tools [4]) ----------
+SVC_MENU_VPN_ON=[9] Enable VPN auto-pause - stop winws while a VPN is connected
+SVC_MENU_VPN_OFF=[10] Disable VPN auto-pause
+VPN_STATUS_LABEL=VPN auto-pause:
+VPN_SERVICE_CONFLICT=The Windows service is installed. VPN auto-pause only manages winws started by this app, so it is not enabled while the service exists.
+VPN_FAILED=Could not create the scheduled task. Make sure the app is running as administrator.
+VPN_EVENT_WARN=The instant network-event task could not be created. The 1-minute check still works, so the reaction may take up to a minute.
+VPN_ENABLED=Enabled. winws is stopped when a VPN connects and started again when it disconnects.
+VPN_NOTE=Detection looks at VPN network adapters and Windows VPN connections. The WireGuard app is ignored. Use Tools [4] to see what is detected. If you press Stop, winws is not restarted when the VPN disconnects. Results are logged in logs\app.log.
+VPN_DISABLED=Disabled. The VPN tasks were removed.
+VPN_DISABLED_PAUSED=winws was paused because of a VPN. Press Start to run it again.
+VPN_ALREADY_OFF=VPN auto-pause was already disabled.
+VPN_DELETE_FAILED=Could not remove the scheduled tasks. Run the app as administrator and try again.
+VPN_CHECKING=Checking for a VPN connection...
+VPN_START_WARN=A VPN connection was detected:
+VPN_START_PROMPT=winws may conflict with the VPN. Start it anyway? [Y/N]:
+VPN_START_CANCELLED=Cancelled, winws was not started.
+TOOLS_OPT_VPNTEST=[4] VPN Detection Test
+VPNTEST_TITLE=VPN DETECTION TEST
+VPNTEST_RUNNING=Checking network adapters and Windows VPN connections...
+VPNTEST_ERROR=Could not run the detection. PowerShell or network adapter information is unavailable.
+VPNTEST_LEGEND=Active network adapters. VPN = counted as a VPN, WG-IGNORED = official WireGuard app tunnel, OTHER = not a VPN.
+VPNTEST_NO_ADAPTERS=No active adapters found.
+VPNTEST_RESULT_ON=VPN detected:
+VPNTEST_RESULT_OFF=No VPN detected.
+VPNTEST_HELP=If this result is wrong, copy the list above and send it so the rules can be adjusted.

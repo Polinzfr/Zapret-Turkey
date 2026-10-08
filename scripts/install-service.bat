@@ -7,20 +7,22 @@ set "PROFILES=%ROOT%profiles"
 set "CONFIGF=%ROOT%config\settings.conf"
 set "SVCNAME=ZapretTurkey"
 
+call "%HERE%lang-load.bat"
+
 echo ============================================================
-echo   ZAPRET TURKEY - Hizmet Kurulumu
+echo   %L_SVC_INSTALL_TITLE%
 echo ============================================================
 
 net session >nul 2>&1
 if %errorlevel% NEQ 0 (
-    echo [HATA] Bu islem yonetici yetkisi gerektirir.
-    echo Sag tik - Yonetici Olarak Calistir ile tekrar deneyin.
+    echo %L_SVC_ADMIN_REQUIRED%
+    echo %L_SVC_ADMIN_HINT%
     pause
     exit /b 1
 )
 
 if not exist "%ENGINE%\winws.exe" (
-    echo [HATA] engine\winws.exe bulunamadi.
+    echo %L_SVC_ERR_ENGINE_MISSING%
     pause
     exit /b 1
 )
@@ -33,7 +35,7 @@ if exist "%CONFIGF%" (
     )
 )
 if not exist "%PROFILES%\%CURRENT_PROFILE%.conf" (
-    echo [HATA] Profil dosyasi bulunamadi: %CURRENT_PROFILE%.conf
+    echo %L_SVC_ERR_PROFILE_MISSING% %CURRENT_PROFILE%.conf
     pause
     exit /b 1
 )
@@ -44,7 +46,7 @@ for /f "usebackq tokens=1,* delims==" %%A in ("%PROFILES%\%CURRENT_PROFILE%.conf
     if "%%A"=="PORT_TCP" set "PPORT=%%B"
 )
 if not defined PARGS (
-    echo [HATA] Secili profilde ARGS satiri yok.
+    echo %L_SVC_ERR_NO_ARGS%
     pause
     exit /b 1
 )
@@ -57,16 +59,16 @@ rem komut satirina EKLENIR.
 rem Hedef liste: desync SADECE bu listedeki adreslere uygulanir.
 set "TARGET_FILE=%PROFILES%\target-hosts.txt"
 if exist "%TARGET_FILE%" (
-    set "PARGS=%PARGS% --hostlist="%TARGET_FILE%""
+    set "PARGS=!PARGS! --hostlist="!TARGET_FILE!""
 )
 
 rem Haric tutma listesi (bilinen uyumsuzluklar - WhatsApp gibi).
 set "EXCLUDE_FILE=%PROFILES%\exclude-hosts.txt"
 if exist "%EXCLUDE_FILE%" (
-    set "PARGS=%PARGS% --hostlist-exclude="%EXCLUDE_FILE%""
+    set "PARGS=!PARGS! --hostlist-exclude="!EXCLUDE_FILE!""
 )
 
-echo Secili profil: %CURRENT_PROFILE%
+echo %L_SVC_SELECTED_PROFILE_LABEL% %CURRENT_PROFILE%
 echo.
 
 rem --- onceki calisan surumleri kapat (cakisma onlemi) ---
@@ -78,16 +80,16 @@ sc delete "%SVCNAME%" >nul 2>&1
 
 sc create "%SVCNAME%" binPath= "\"%ENGINE%\winws.exe\" --wf-tcp=%PPORT% %PARGS%" start= auto
 if not %errorlevel%==0 (
-    echo [HATA] Hizmet olusturulamadi.
+    echo %L_SVC_ERR_CREATE_FAILED%
     pause
     exit /b 1
 )
-sc description "%SVCNAME%" "Zapret Turkey - Turkiye DPI Bypass (profil: %CURRENT_PROFILE%)"
+sc description "%SVCNAME%" "%L_SVC_INSTALL_DESC% %CURRENT_PROFILE%)"
 sc start "%SVCNAME%"
 
 echo.
-echo Hizmet kuruldu ve baslatildi: %SVCNAME%
-echo Profil degistirdiginizde hizmeti bu ekrandan yeniden kurmaniz gerekir
-echo ki yeni parametreler gecerli olsun.
+echo %L_SVC_INSTALLED_LABEL% %SVCNAME%
+echo %L_SVC_REINSTALL_NOTE_1%
+echo %L_SVC_REINSTALL_NOTE_2%
 pause
 exit /b 0

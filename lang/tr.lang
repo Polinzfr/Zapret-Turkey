@@ -1,0 +1,405 @@
+# Zapret Turkey - Turkce dil dosyasi
+# Format: ANAHTAR=Deger
+# YASAK: satirda ! (unlem) veya % (yuzde) karakteri kullanmayin - CMD bunlari
+#        yutar/bozar. Gerekiyorsa {pct} gibi bir yer tutucu kullanin.
+# Bu dosya BOM'SUZ UTF-8 olarak kaydedilmelidir.
+
+# ---------- Ilk acilis: dil secimi (henuz kod yok, bir sonraki adimda eklenecek) ----------
+LANG_SELECT_TITLE=Dil secin / Please select a language
+LANG_SELECT_PROMPT=Secim / Choice [1-2]:
+LANG_SELECT_OPT_TR=[1] Turkce
+LANG_SELECT_OPT_EN=[2] English
+LANG_SELECT_INVALID=Gecersiz secim, tekrar deneyin.
+
+# ---------- Yonetici kontrolu ----------
+ADMIN_NEEDED=Yonetici yetkisi gerekiyor.
+ADMIN_PROMPT=Yeniden yonetici olarak baslatilsin mi? [Y/N]:
+ADMIN_DENIED_1=Yonetici yetkisi olmadan baslatma/durdurma ve hizmet islemleri calismaz.
+
+# ---------- Dosya kontrolleri ----------
+ERR_ENGINE_NOT_FOUND=[HATA] engine\winws.exe bulunamadi. Beklenen yol:
+ERR_WINDIVERT_NOT_FOUND=[HATA] engine\WinDivert64.sys bulunamadi. Beklenen yol:
+
+# ---------- Ana menu basligi / durum satirlari ----------
+APP_TITLE=ZAPRET TURKEY - Turkiye DPI Bypass Utility
+LBL_STATUS=Durum
+LBL_PROFILE=Profil
+LBL_DNS_MODE=DNS modu
+LBL_SERVICE=Hizmet
+STATUS_RUNNING=AKTIF
+STATUS_STOPPED=DURDU
+SVC_INSTALLED=KURULU
+SVC_NOT_INSTALLED=KURULU DEGIL
+
+# ---------- Ana menu secenekleri ----------
+MENU_START=Baslat
+MENU_STOP=Durdur
+MENU_CHANGE_PROFILE=Profil - degistir / disa aktar / ice aktar
+MENU_AUTO_TEST=Otomatik Test
+MENU_SERVICE_SETTINGS=Hizmet Ayarlari
+MENU_DIAGNOSTICS=Tanilama
+MENU_SETTINGS=Ayarlar
+MENU_LOGS=Gunlukler
+MENU_DEBUG=Debug Mode
+MENU_EXIT=Cikis
+PROMPT_CHOICE=Secim:
+
+# ---------- Cikis ----------
+EXIT_SERVICE_CONTINUES=Zapret Turkey hizmeti arka planda calismaya devam edecek.
+EXIT_WINWS_STILL_RUNNING=winws hala calisiyor. Kapatilsin mi? [Y/N]:
+EXIT_WINWS_KILLED=winws kapatildi.
+EXIT_DNS_UNTOUCHED=DNS ayarlariniza dokunulmadi.
+EXIT_CLOSING=Zapret Turkey kapatiliyor...
+
+# ---------- Profil goruntu adlari (varsayilan; .conf NAME= varsa onu ezer) ----------
+PROFILE_STABLE_NAME=Turkiye Stable (HostFakeSplit)
+PROFILE_COMPATIBILITY_NAME=Uyumluluk (Fake)
+PROFILE_STRONG_NAME=Guclu (MultiSplit)
+PROFILE_UNKNOWN_NAME=Bilinmeyen profil
+
+# ---------- Baslat (START_ENGINE) ----------
+START_OK=Profil baslatildi.
+START_CMDLINE_LABEL=Komut satiri:
+START_RESTART_HINT=Discord ve Roblox gibi uygulamalari tamamen kapatip yeniden acarak test edin.
+START_FAILED=START FAILED
+START_FAILED_PROFILE_LABEL=Profile:
+START_FAILED_REASON_LABEL=Reason :
+START_FAILED_PATH_LABEL=Path   :
+REASON_PROFILE_PARSE_FAILED_HINT=Profil dosyasinda "ARGS=..." satiri bulunamadi veya bos.
+REASON_ENGINE_MISSING_HINT=Beklenen yol:
+REASON_WINDIVERT_MISSING_HINT=engine\ klasorunde WinDivert.dll veya WinDivert64.sys eksik.
+REASON_NOT_ADMIN_HINT=Program yonetici yetkisiyle yeniden baslatilmali.
+REASON_ENGINE_EXITED_CMDLINE_LABEL=Komut satiri:
+REASON_ENGINE_EXITED_STDERR_LABEL=stderr      :
+REASON_ENGINE_EXITED_FULL_LOG=Tam stderr icin:
+REASON_UNKNOWN_STATE_1=winws.exe ne calisir durumda ne de bir cikis kodu birakti.
+REASON_UNKNOWN_STATE_2=Tanilama menusunu (secenek 6) kullanin.
+
+# ---------- Durdur (STOP_ENGINE) ----------
+STOP_OK=winws durduruldu.
+STOP_ALREADY_STOPPED=winws zaten calismiyordu.
+
+# ---------- Profil Degistir (CHANGE_PROFILE) ----------
+CHANGE_PROFILE_PROMPT=Profil secin:
+CHANGE_PROFILE_CANCEL=Iptal
+CHANGE_PROFILE_DONE=Profil degistirildi:
+CHANGE_PROFILE_RESTART_PROMPT=winws su an calisiyor. Yeni profille yeniden baslatilsin mi? [Y/N]:
+CHANGE_PROFILE_SERVICE_NOTE_1=Not: Hizmet olarak kuruluysa, yeni profilin gecerli olmasi icin
+CHANGE_PROFILE_SERVICE_NOTE_2=Hizmet Ayarlari - Hizmeti Kur secenegini tekrar calistirin.
+
+# ---------- Otomatik Test ----------
+AUTOTEST_TITLE=Otomatik profil testi
+AUTOTEST_INFO_1=Bu islem sirasinda winws birkac kez yeniden baslatilacak.
+AUTOTEST_INFO_2=Test kapsami: yalnizca temel HTTPS/TCP baglanti testi - Discord, Roblox,
+AUTOTEST_INFO_3=ve Steam alan adlarina baglanti kurulabiliyor mu. Uygulama ici davranis
+AUTOTEST_INFO_4=(mesaj, CDN, WebSocket vb.) bu testte KONTROL EDILMEZ.
+AUTOTEST_CURL_MISSING=[HATA] curl.exe bulunamadi. Windows 10 1803+ / Windows 11 gerekli.
+AUTOTEST_CONTINUE_PROMPT=Devam edilsin mi? [Y/N]:
+AUTOTEST_TESTING_LABEL=--- Test ediliyor:
+AUTOTEST_START_FAILED_LABEL=Baslatilamadi. Neden:
+AUTOTEST_CONNECTING=winws calisiyor, baglanti testi yapiliyor...
+AUTOTEST_PASS=PASS
+AUTOTEST_FAIL=FAIL (baglanti testi basarisiz)
+AUTOTEST_RESULTS_TITLE=SONUC
+AUTOTEST_RESULT_STABLE=STABLE        =
+AUTOTEST_RESULT_COMPAT=COMPATIBILITY =
+AUTOTEST_RESULT_STRONG=STRONG        =
+AUTOTEST_RECOMMENDED=Onerilen profil:
+AUTOTEST_NONE_PASSED=Hicbir profil temel baglanti testini gecemedi.
+AUTOTEST_NONE_PASSED_HINT=Tanilama menusunu (secenek 6) kullanarak ag/WinDivert durumunu kontrol edin.
+AUTOTEST_SAVE_PROMPT=Bu profil varsayilan olarak kaydedilsin mi? [Y/N]:
+AUTOTEST_SAVED=Kaydedildi.
+
+# ---------- Hizmet Ayarlari ----------
+SVC_MENU_TITLE=HIZMET AYARLARI
+SVC_MENU_STATUS_LABEL=Hizmet durumu:
+SVC_MENU_INSTALL=[1] Hizmeti Kur          (mevcut profille, otomatik baslatma)
+SVC_MENU_UNINSTALL=[2] Hizmeti Kaldir
+SVC_MENU_START=[3] Hizmeti Baslat
+SVC_MENU_STOP=[4] Hizmeti Durdur
+SVC_MENU_BACK=[0] Geri
+
+# ---------- Ayarlar ----------
+SETTINGS_TITLE=AYARLAR
+SETTINGS_DNS_LABEL=DNS modu   :
+SETTINGS_DNS_DEFAULT_NOTE=(varsayilan: system - hicbir sey degistirilmez)
+SETTINGS_DEBUG_LABEL=Debug modu :
+SETTINGS_LANG_LABEL=Dil        :
+SETTINGS_OPT_DNS_LEAVE=[1] DNS'e dokunma (varsayilana don / etiketi guncelle)
+SETTINGS_OPT_DNS_CLOUDFLARE=[2] DNS Yardimcisi (Cloudflare veya Google) - agi degistirir
+SETTINGS_OPT_DNS_DHCP=[3] DNS'i otomatige (DHCP) geri al
+SETTINGS_OPT_DEBUG_TOGGLE=[4] Debug etiketini Ac/Kapat
+SETTINGS_OPT_LANG=[5] Dili degistir (Turkce / English)
+SETTINGS_BACK=[0] Geri
+SETTINGS_DNS_TAG_UPDATED=Etiket guncellendi. Bu secenek sistem ayarina dokunmaz.
+DNS_CLOUDFLARE_WARN=UYARI: Bu islem Windows agindaki DNS sunucu ayarini degistirir.
+DNS_CLOUDFLARE_INFO_1=Bu, Zapret Turkey'nin varsayilan davranisi DEGILDIR; yalnizca sizin
+DNS_CLOUDFLARE_INFO_2=bu secimi yapmaniz halinde uygulanir. Adaptor listesi asagida:
+DNS_ADAPTER_PROMPT=Adaptorun tam adini yazin (ornek: Ethernet, Wi-Fi):
+DNS_CLOUDFLARE_CONFIRM=Bu adaptor kullanilsin mi? [Y/N]:
+DNS_CLOUDFLARE_DONE=DNS ayarlandi. Geri almak icin Ayarlar - [3] secenegini kullanin.
+DNS_DHCP_PROMPT=DHCP'ye dondurulecek adaptorun tam adini yazin:
+DNS_DHCP_DONE=DNS otomatige (DHCP) dondu.
+# ---------- DNS Yardimcisi (otomatik algila + Cloudflare/Google + IPv6) ----------
+DNS_ASSIST_DETECTING=Aktif ag adaptorunuz tespit ediliyor...
+DNS_ASSIST_FOUND_ONE=Tespit edilen adaptor:
+DNS_ASSIST_FOUND_MULTI=Birden fazla bagli adaptor bulundu. Birini secin:
+DNS_ASSIST_NONE_FOUND=Bagli bir adaptor otomatik tespit edilemedi.
+DNS_ASSIST_MANUAL_FALLBACK=Adaptor adini elle girin:
+DNS_PROVIDER_PROMPT=Bir DNS saglayicisi secin:
+DNS_PROVIDER_CLOUDFLARE=[1] Cloudflare - 1.1.1.1 / 1.0.0.1
+DNS_PROVIDER_GOOGLE=[2] Google - 8.8.8.8 / 8.8.4.4
+DNS_PROVIDER_CANCEL=[0] Iptal
+DNS_IPV6_DETECTED=Bu adaptorde gercek bir IPv6 adresi de var.
+DNS_IPV6_OFFER_PROMPT=IPv6 DNS'i de ayarlansin mi (onerilir)? [Y/N]:
+DNS_IPV6_NONE=Bu adaptorde gercek bir IPv6 adresi bulunamadi - IPv6 DNS zaten kullanilmayacagi icin atlaniyor.
+DNS_ASSIST_APPLYING=DNS ayarlari uygulaniyor...
+DNS_ASSIST_VERIFY_TITLE=Dogrulaniyor...
+DNS_ASSIST_VERIFY_LABEL=discord.com su an su adrese cozuluyor:
+DNS_ASSIST_DONE=Tamamlandi. Dogrulamak icin Diagnostics veya Auto Test'i tekrar calistirin.
+DEBUG_TAG_OFF=Debug etiketi kapatildi.
+DEBUG_TAG_ON=Debug etiketi acildi.
+
+# ---------- Gunlukler ----------
+LOGS_TITLE=GUNLUKLER
+LOGS_OPT_SHOW=[1] Son loglari goster (app.log)
+LOGS_OPT_OPEN_FOLDER=[2] Log klasorunu ac
+LOGS_OPT_ERRORS=[3] Son hatalari goster
+LOGS_OPT_STDERR=[4] Son engine stderr'i goster
+LOGS_BACK=[0] Geri
+LOGS_NONE_YET=Henuz log yok.
+LOGS_STDERR_NONE_YET=Henuz engine stderr kaydi yok.
+
+# ---------- Debug Mode ----------
+DEBUG_TITLE=DEBUG MODE - Anlik Durum
+DEBUG_ROOT_LABEL=ROOT dizini      :
+DEBUG_ENGINE_DIR_LABEL=ENGINE_DIR       :
+DEBUG_PROFILE_DIR_LABEL=PROFILE_DIR      :
+DEBUG_LOG_DIR_LABEL=LOG_DIR          :
+DEBUG_PROFILE_ID_LABEL=Secili profil ID :
+DEBUG_PROFILE_NAME_LABEL=Profil adi       :
+DEBUG_PROFILE_FILE_LABEL=Profil dosyasi   :
+DEBUG_FILE_EXISTS=  -> dosya VAR
+DEBUG_FILE_MISSING=  -> dosya YOK
+DEBUG_PARSED_PORT_LABEL=Parse edilen PORT:
+DEBUG_PARSED_ARGS_LABEL=Parse edilen ARGS:
+DEBUG_ADMIN_LABEL=Yonetici yetkisi :
+DEBUG_YES=EVET
+DEBUG_NO=HAYIR
+DEBUG_WINWS_STATUS_LABEL=winws durumu     :
+DEBUG_WINWS_RUNNING=CALISIYOR
+DEBUG_WINWS_NOT_RUNNING=CALISMIYOR
+DEBUG_SVC_STATUS_LABEL=Hizmet durumu    :
+DEBUG_LAST_CALL_TITLE=--- Bu oturumdaki son ENGINE_START_CORE cagrisi ---
+DEBUG_CMDLINE_LABEL=Komut satiri :
+DEBUG_RESULT_LABEL=Sonuc        :
+DEBUG_EXITCODE_LABEL=Exit code    :
+DEBUG_STDERR_LABEL=stderr       :
+DEBUG_NO_CALL_YET=Bu oturumda henuz Baslat / Otomatik Test calistirilmadi.
+DEBUG_LOG_FILES_LABEL=Log dosyalari:
+
+# ---------- diagnostics.bat / install-service.bat / uninstall-service.bat ----------
+DIAG_TITLE=TANILAMA
+DIAG_ADMIN_LABEL=Yonetici yetkisi   :
+DIAG_ENGINE_LABEL=winws.exe           :
+DIAG_WD_SYS_LABEL=WinDivert64.sys     :
+DIAG_WD_DLL_LABEL=WinDivert.dll       :
+DIAG_STATUS_PRESENT=VAR
+DIAG_STATUS_MISSING=EKSIK
+DIAG_STATUS_NONE=YOK
+DIAG_PROFILE_LABEL=Secili profil       :
+DIAG_DNSMODE_LABEL=DNS modu (uygulama) :
+DIAG_WINWS_STATUS_LABEL=winws durumu        :
+DIAG_SVC_STATUS_LABEL=Hizmet durumu       :
+DIAG_CONFLICT_SECTION=--- WinDivert tabanli olasi servisler ---
+DIAG_CONFLICT_FOUND=[!] Bulundu:
+DIAG_CONFLICT_HINT=(bu Zapret Turkey disinda baska bir WinDivert tabanli arac olabilir - ayni anda calistirmayin)
+DIAG_CONFLICT_NONE=Bilinen cakisan servis bulunamadi.
+DIAG_CONN_SECTION=--- Baglanti ---
+DIAG_IPV4_LABEL=IPv4 adresi         :
+DIAG_IPV6_LABEL=IPv6 adresi         :
+DIAG_TEST_SECTION=--- Baglanti testleri (curl ile) ---
+DIAG_CURL_MISSING=curl.exe bulunamadi, baglanti testleri atlandi.
+DIAG_TEST_OK=OK
+DIAG_TEST_FAIL=BASARISIZ
+DIAG_TEST_UNKNOWN=BILINMIYOR
+DIAG_REPORT_PROMPT=Tanilama raporu (sanitized TXT) olusturulsun mu? [Y/N]:
+DIAG_REPORT_HEADER=Zapret Turkey - Tanilama Raporu
+DIAG_REPORT_DATE_LABEL=Tarih:
+DIAG_REPORT_PROFILE_LABEL=Profil            :
+DIAG_REPORT_DNSMODE_LABEL=DNS modu          :
+DIAG_REPORT_ADMIN_LABEL=Yonetici          :
+DIAG_REPORT_WINWS_LABEL=winws durumu      :
+DIAG_REPORT_SVC_LABEL=Hizmet durumu     :
+DIAG_REPORT_IPV4_LABEL=IPv4              :
+DIAG_REPORT_IPV6_LABEL=IPv6              :
+DIAG_REPORT_CONFLICT_LABEL=WinDivert cakisma :
+DIAG_REPORT_DISCORD_LABEL=Discord           :
+DIAG_REPORT_ROBLOX_LABEL=Roblox            :
+DIAG_REPORT_STEAM_LABEL=Steam             :
+DIAG_REPORT_HTTPS_LABEL=HTTPS (genel)     :
+DIAG_REPORT_NOTE_1=Not: Bu raporda gercek IP adresi, MAC adresi, bilgisayar adi,
+DIAG_REPORT_NOTE_2=kullanici adi veya dosya yollari bilerek YER ALMAZ.
+DIAG_REPORT_NOTE_3=ISS (internet servis saglayici) bilgisini biliyorsaniz GitHub
+DIAG_REPORT_NOTE_4=Issue'ya eklerken elle belirtebilirsiniz.
+DIAG_REPORT_DONE=Rapor olusturuldu:
+# ---------- Diagnostics: DNS kontrolu ----------
+DIAG_DNS_SECTION=--- DNS kontrolu ---
+DIAG_DNS_FIRST_SERVER_LABEL=Kullanilan ilk DNS sunucusu:
+DIAG_DNS_SITE_LABEL=Site
+DIAG_DNS_SYSTEM_LABEL=Sistem DNS
+DIAG_DNS_CLOUDFLARE_LABEL=Cloudflare DNS
+DIAG_DNS_MATCH=ayni
+DIAG_DNS_DIFFERENT=farkli
+DIAG_DNS_UNREACHABLE=Karsilastirma icin 1.1.1.1'e ulasilamadi - DNS kontrolu atlandi.
+DIAG_DNS_VERDICT_MODEM_BAD=Sebep: ilk DNS sunucunuz modeminiz/yonlendiriciniz gibi gorunuyor ve bilinen bir site icin farkli bir adres donduruyor. Bypass calisirken bile bazi sitelerin engelli kalmasinin sebebi muhtemelen bu. Cozum: Ayarlar - DNS Yardimcisi, Cloudflare veya Google DNS ayarlayin.
+DIAG_DNS_VERDICT_MODEM_OK=Modem/yonlendirici DNS'iniz su an dogru cevap veriyor, ama listede ilk sirada ve herhangi bir zaman sahte cevap vermeye baslayabilir. Acil degil, ama onlem olarak Ayarlar - DNS Yardimcisi onerilir.
+DIAG_DNS_VERDICT_OTHER_DIFF=DNS cevaplariniz Cloudflare'den farkli, ama ilk DNS sunucunuz modeminize benzemiyor. Aktif bir VPN, proxy veya hosts dosyasindaki bir kaydi kontrol edin.
+DIAG_DNS_VERDICT_OK=DNS duzgun gorunuyor - bir islem gerekmiyor.
+DIAG_DNS_CDN_NOTE=Not: Roblox ve Steam farkli CDN sunucularindan mesru sekilde farkli adresler dondurebilir - sadece burada fark olmasi tek basina DNS'in bozuk oldugu anlamina gelmez.
+
+SVC_INSTALL_TITLE=ZAPRET TURKEY - Hizmet Kurulumu
+SVC_UNINSTALL_TITLE=ZAPRET TURKEY - Hizmeti Kaldir
+SVC_ADMIN_REQUIRED=[HATA] Bu islem yonetici yetkisi gerektirir.
+SVC_ADMIN_HINT=Sag tik - Yonetici Olarak Calistir ile tekrar deneyin.
+SVC_ERR_ENGINE_MISSING=[HATA] engine\winws.exe bulunamadi.
+SVC_ERR_PROFILE_MISSING=[HATA] Profil dosyasi bulunamadi:
+SVC_ERR_NO_ARGS=[HATA] Secili profilde ARGS satiri yok.
+SVC_SELECTED_PROFILE_LABEL=Secili profil:
+SVC_ERR_CREATE_FAILED=[HATA] Hizmet olusturulamadi.
+SVC_INSTALL_DESC=Zapret Turkey - Turkiye DPI Bypass (profil:
+SVC_INSTALLED_LABEL=Hizmet kuruldu ve baslatildi:
+SVC_REINSTALL_NOTE_1=Profil degistirdiginizde hizmeti bu ekrandan yeniden kurmaniz gerekir
+SVC_REINSTALL_NOTE_2=ki yeni parametreler gecerli olsun.
+SVC_NOT_INSTALLED_MSG=Hizmet zaten kurulu degil.
+SVC_UNINSTALLED_OK=Hizmet kaldirildi:
+SVC_ERR_UNINSTALL_FAILED=[HATA] Hizmet kaldirilamadi.
+SVC_UNINSTALL_NOTE_1A=Not: Bu islem yalnizca "
+SVC_UNINSTALL_NOTE_1B=" hizmetini kaldirir.
+SVC_UNINSTALL_NOTE_2=WinDivert surucusu baska yazilimlar tarafindan da kullanilabildigi icin
+SVC_UNINSTALL_NOTE_3=burada otomatik olarak silinmez. Gerekiyorsa Tanilama menusunden
+SVC_UNINSTALL_NOTE_4=diger WinDivert tabanli servisleri kontrol edin.
+
+# ---------- Araclar alt menusu ----------
+MENU_TOOLS=Araclar
+TOOLS_TITLE=ARACLAR
+TOOLS_OPT_DEBUG=[3] Debug Mode
+TOOLS_OPT_SITELIST=[1] Site Listesi Duzenle
+TOOLS_OPT_TESTSITE=[2] Bir Siteyi Test Et
+TESTSITE_TITLE=BIR SITEYI TEST ET
+TESTSITE_PROMPT=Test edilecek site adini girin (ornek: example.com):
+TESTSITE_EMPTY=Bos site adi girildi, iptal edildi.
+TESTSITE_NOT_RUNNING_WARN=Uyari: winws su an calismiyor, bu test bypass olmadan yapilacak.
+TESTSITE_TESTING=Test ediliyor:
+TESTSITE_PASS=Baglanti basarili (PASS)
+TESTSITE_FAIL=Baglanti basarisiz (FAIL)
+SITELIST_TARGET_LABEL=Hedef Listesi (target-hosts.txt)
+SITELIST_EXCLUDE_LABEL=Haric Tutma Listesi (exclude-hosts.txt)
+SITELIST_EMPTY=(Liste bos)
+SITELIST_OPT_SHOW=[1] Listeyi Goster
+SITELIST_OPT_ADD=[2] Site Ekle
+SITELIST_OPT_REMOVE=[3] Site Sil
+SITELIST_ADD_PROMPT=Eklenecek site adini girin (ornek: example.com):
+SITELIST_ADD_DUPLICATE=Bu site zaten listede:
+SITELIST_ADD_DONE=Eklendi:
+SITELIST_REMOVE_PROMPT=Silinecek sitenin numarasini girin:
+SITELIST_REMOVE_INVALID=Gecersiz numara:
+SITELIST_REMOVE_DONE=Silindi:
+SITELIST_RESTART_PROMPT=winws su an calisiyor. Degisikligin gecerli olmasi icin yeniden baslatilsin mi? [Y/N]:
+SITELIST_RESTART_DONE=Yeniden baslatildi.
+
+# ---------- Profil menusu: disa aktar / ice aktar / GitHub Issue raporu (ana menu [3]) ----------
+PMENU_TITLE=PROFIL
+PMENU_OPT_CHANGE=[1] Profili degistir
+PMENU_OPT_EXPORT=[2] Profili dosyaya disa aktar
+PMENU_OPT_IMPORT=[3] Profili dosyadan ice aktar
+PMENU_OPT_REPORT=[4] GitHub Issue raporu - docs/ISS.md formati
+PEXPORT_TITLE=PROFILI DISA AKTAR
+PEXPORT_INFO=Secili profili bir config dosyasina kaydeder. Acilan pencerede nereye kaydedecegini sen sec.
+PEXPORT_PROFILE_LABEL=Disa aktarilacak profil:
+PEXPORT_DIALOG_TITLE=Profili disa aktar
+PEXPORT_DIALOG_FAILED=Kaydet penceresi acilamadi. Bunun yerine dosyanin tam yolunu yazin.
+PEXPORT_PATH_PROMPT=Kaydedilecek tam yol:
+PEXPORT_OVERWRITE_PROMPT=Bu dosya zaten var. Uzerine yazilsin mi? [Y/N]:
+PEXPORT_CANCELLED=Iptal edildi, hicbir sey kaydedilmedi.
+PEXPORT_DONE=Profil kaydedildi:
+PEXPORT_FAILED=Dosya yazilamadi. Konumu ve izinlerinizi kontrol edin.
+IMPORT_TITLE=PROFIL ICE AKTAR
+IMPORT_INFO=Bir config dosyasindan YALNIZCA profili okur. DNS, debug ve dil ice aktarilmaz.
+IMPORT_DIALOG_TITLE=Profili ice aktar
+IMPORT_DIALOG_FAILED=Dosya penceresi acilamadi. Bunun yerine dosya yolunu yazin.
+IMPORT_PROMPT=Dosya yolu - dosyayi bu pencereye surukleyebilirsiniz:
+IMPORT_CANCELLED=Dosya secilmedi, iptal edildi.
+IMPORT_NOT_FOUND=Dosya bulunamadi:
+IMPORT_NO_PROFILE=Bu dosyada CURRENT_PROFILE satiri bulunamadi.
+IMPORT_BAD_PROFILE=Dosyadaki profil adi gecersiz:
+IMPORT_PROFILE_MISSING=Bu profil profiles klasorunde yok:
+IMPORT_CURRENT_LABEL=Mevcut profil   :
+IMPORT_NEW_LABEL=Dosyadaki profil:
+IMPORT_ALREADY=Dosyadaki profil zaten secili, yapilacak bir sey yok.
+IMPORT_CONFIRM=Bu profile gecilsin mi? [Y/N]:
+IMPORT_ABORTED=Iptal edildi, hicbir sey degistirilmedi.
+REPORT_TITLE=GITHUB ISSUE RAPORU
+REPORT_COLLECTING=Bilgiler toplaniyor...
+REPORT_TESTING=winws calisiyor - Discord, Roblox ve Steam curl ile test ediliyor...
+REPORT_NOT_TESTED=Discord/Roblox/Steam TEST EDILMEDI, cunku winws calismiyor veya curl yok. O satirlari kendiniz doldurun.
+REPORT_COPY_HINT=Asagidaki blogu bir GitHub Issue'ya yapistirin - format: docs/ISS.md. Bos alanlari doldurun ve yalnizca profil sizde gercekten calisiyorsa paylasin.
+REPORT_COPIED=Blok panoya da kopyalandi.
+REPORT_COPY_FAILED=Panoya kopyalanamadi - yukaridaki blogu elle secip kopyalayin.
+REPORT_SAVE_PROMPT=Dosyaya da kaydedilsin mi? [Y/N]:
+REPORT_DIALOG_TITLE=Raporu kaydet
+REPORT_DIALOG_FAILED=Kaydet penceresi acilamadi, bu yuzden rapor dosyaya kaydedilmedi.
+REPORT_SAVED=Kaydedildi:
+
+# ---------- Giriste otomatik baslatma (Hizmet Ayarlari [5]/[6]) ----------
+SVC_MENU_ASTART_ON=[5] Giriste otomatik baslatmayi ac - servis kurmadan
+SVC_MENU_ASTART_OFF=[6] Giriste otomatik baslatmayi kapat
+ASTART_STATUS_LABEL=Giriste baslat:
+ASTART_ON=ACIK
+ASTART_OFF=KAPALI
+ASTART_SERVICE_CONFLICT=Windows servisi kurulu ve winws'yi zaten acilista otomatik baslatiyor. Bunun yerine giris gorevini istiyorsan once servisi kaldir.
+ASTART_FAILED=Zamanlanmis gorev olusturulamadi. Uygulamanin yonetici olarak calistigindan emin ol.
+ASTART_ENABLED=Acildi. winws, oturum actiktan yaklasik 15 saniye sonra gizli olarak baslayacak.
+ASTART_NOTE=Bu oturumda kapatmak icin Durdur'u kullan. Sonuclar logs\app.log dosyasina yazilir. Klasoru tasirsan bunu kapatip yeniden ac.
+ASTART_DISABLED=Kapatildi. Giris gorevi silindi.
+ASTART_ALREADY_OFF=Giriste baslatma zaten kapaliydi.
+ASTART_DELETE_FAILED=Zamanlanmis gorev silinemedi. Uygulamayi yonetici olarak calistirip tekrar dene.
+
+# ---------- Watchdog (Hizmet Ayarlari [7]/[8]) ----------
+SVC_MENU_WDOG_ON=[7] Watchdog'u ac - winws coker ise yeniden baslat
+SVC_MENU_WDOG_OFF=[8] Watchdog'u kapat
+WDOG_STATUS_LABEL=Watchdog:
+WDOG_SERVICE_CONFLICT=Windows servisi kurulu. Watchdog sadece bu uygulamanin baslattigi winws'yi izler, bu yuzden servis varken acilmaz.
+WDOG_FAILED=Zamanlanmis gorev olusturulamadi. Uygulamanin yonetici olarak calistigindan emin ol.
+WDOG_ENABLED=Acildi. Her 2 dakikada bir winws kontrol edilir, beklenmedik sekilde kapanmissa yeniden baslatilir.
+WDOG_NOTE=Durdur'a basarsan Baslat'a tekrar basana kadar yeniden baslatilmaz. Ust uste 3 basarisiz denemeden sonra vazgecer. Gorev Yoneticisi'nden winws'yi kapatmak da coker gibi sayilir ve yeniden baslatilir. Sonuclar logs\app.log dosyasina yazilir.
+WDOG_DISABLED=Kapatildi. Watchdog gorevi silindi.
+WDOG_ALREADY_OFF=Watchdog zaten kapaliydi.
+WDOG_DELETE_FAILED=Zamanlanmis gorev silinemedi. Uygulamayi yonetici olarak calistirip tekrar dene.
+
+# ---------- VPN otomatik duraklatma (Hizmet Ayarlari [9]/[10], Araclar [4]) ----------
+SVC_MENU_VPN_ON=[9] VPN otomatik duraklatmayi ac - VPN bagliyken winws durur
+SVC_MENU_VPN_OFF=[10] VPN otomatik duraklatmayi kapat
+VPN_STATUS_LABEL=VPN otomatik duraklatma:
+VPN_SERVICE_CONFLICT=Windows servisi kurulu. VPN otomatik duraklatma sadece bu uygulamanin baslattigi winws'yi yonetir, bu yuzden servis varken acilmaz.
+VPN_FAILED=Zamanlanmis gorev olusturulamadi. Uygulamanin yonetici olarak calistigindan emin ol.
+VPN_EVENT_WARN=Anlik ag olayi gorevi olusturulamadi. 1 dakikalik kontrol yine calisir, bu yuzden tepki bir dakikaya kadar gecikebilir.
+VPN_ENABLED=Acildi. VPN baglaninca winws durdurulur, VPN kapaninca yeniden baslatilir.
+VPN_NOTE=Algilama VPN ag adaptorlerine ve Windows VPN baglantilarina bakar. WireGuard uygulamasi yok sayilir. Neyin algilandigini gormek icin Araclar [4]'u kullan. Durdur'a basarsan VPN kapaninca winws yeniden baslatilmaz. Sonuclar logs\app.log dosyasina yazilir.
+VPN_DISABLED=Kapatildi. VPN gorevleri silindi.
+VPN_DISABLED_PAUSED=winws bir VPN yuzunden duraklatilmisti. Tekrar calistirmak icin Baslat'a bas.
+VPN_ALREADY_OFF=VPN otomatik duraklatma zaten kapaliydi.
+VPN_DELETE_FAILED=Zamanlanmis gorevler silinemedi. Uygulamayi yonetici olarak calistirip tekrar dene.
+VPN_CHECKING=VPN baglantisi kontrol ediliyor...
+VPN_START_WARN=Bir VPN baglantisi algilandi:
+VPN_START_PROMPT=winws VPN ile cakisabilir. Yine de baslatilsin mi? [Y/N]:
+VPN_START_CANCELLED=Iptal edildi, winws baslatilmadi.
+TOOLS_OPT_VPNTEST=[4] VPN Algilama Testi
+VPNTEST_TITLE=VPN ALGILAMA TESTI
+VPNTEST_RUNNING=Ag adaptorleri ve Windows VPN baglantilari kontrol ediliyor...
+VPNTEST_ERROR=Algilama calistirilamadi. PowerShell veya ag adaptoru bilgisi kullanilamiyor.
+VPNTEST_LEGEND=Aktif ag adaptorleri. VPN = VPN sayildi, WG-IGNORED = resmi WireGuard uygulamasi tuneli, OTHER = VPN degil.
+VPNTEST_NO_ADAPTERS=Aktif adaptor bulunamadi.
+VPNTEST_RESULT_ON=VPN algilandi:
+VPNTEST_RESULT_OFF=VPN algilanmadi.
+VPNTEST_HELP=Bu sonuc yanlissa yukaridaki listeyi kopyalayip gonder, kurallari ona gore duzeltelim.
