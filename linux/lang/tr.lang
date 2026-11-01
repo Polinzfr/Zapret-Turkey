@@ -1,0 +1,51 @@
+# Zapret Turkey - Linux eki (Turkce)
+# Ortak ..\lang\tr.lang dosyasindan SONRA yuklenir: buradaki anahtarlar
+# ortak olanlari (Windows ifadelerini) ezer ve Linux'a ozel (LNX_*)
+# anahtarlari ekler.
+# Format: ANAHTAR=Deger. BOM'suz UTF-8 olarak kaydedin.
+
+# ---------- Genel ----------
+LNX_NEED_ROOT=Root yetkisi gerekiyor. sudo ile yeniden baslatiliyor...
+LNX_PRESS_ENTER=Devam etmek icin Enter'a basin...
+LNX_NOT_YET=Bu bolum Linux surumunde henuz hazir degil - sonraki adimlarda eklenecek.
+LNX_PROFILE_NONE=Su klasorde profil dosyasi bulunamadi:
+LNX_LANG_CHANGED=Dil degistirildi:
+LNX_OPEN_FOLDER_FAIL=Dosya yoneticisi acilamadi. Klasor:
+LNX_NO_SYSTEMD=Bu sistemde systemd bulunamadi.
+
+# ---------- Motor derleme (ilk calistirma) ----------
+LNX_BUILD_PROMPT=nfqws motoru henuz derlenmemis. Simdi derlensin mi? (internet gerekir, yaklasik bir dakika) [Y/N]:
+LNX_BUILD_INSTALLING=Derleme paketleri kuruluyor...
+LNX_BUILD_DOWNLOADING=Zapret kaynagi indiriliyor...
+LNX_BUILD_COMPILING=nfqws derleniyor...
+LNX_BUILD_DONE=Motor hazir:
+LNX_BUILD_FAIL=Derleme basarisiz. Yukaridaki hata satirlarini okuyun.
+LNX_BUILD_NO_PM=Desteklenen paket yoneticisi (apt, dnf, pacman) bulunamadi. Derleme bagimliliklarini elle kurup nfqws'i derleyin.
+
+# ---------- Windows'tan farkli ifadeler ----------
+EXIT_WINWS_STILL_RUNNING=nfqws hala calisiyor. Kapatilsin mi? [Y/N]:
+STOP_OK=nfqws durduruldu.
+STOP_ALREADY_STOPPED=nfqws zaten calismiyordu.
+REASON_ENGINE_MISSING_HINT=nfqws yok. Baslat sorusundan derleyin ya da build komutunu calistirin. Beklenen yol:
+REASON_NOT_ADMIN_HINT=Program root olarak (sudo) calistirilmali.
+REASON_NFT_MISSING_HINT=nft bulunamadi. Once nftables kurun, ornek: sudo apt install nftables
+REASON_NFT_FAILED_HINT=nftables kurali eklenemedi, bu yuzden nfqws tekrar durduruldu.
+
+# ---------- Tanilama ifadeleri ----------
+DIAG_ADMIN_LABEL=Root yetkisi         :
+DIAG_ENGINE_LABEL=nfqws               :
+DIAG_WINWS_STATUS_LABEL=nfqws durumu        :
+DIAG_CONFLICT_SECTION=--- Olasi cakisan araclar (resmi zapret) ---
+DIAG_CONFLICT_HINT=(baska bir zapret kurulumu etkin - Zapret Turkey ile ayni anda calistirmayin)
+DIAG_CONFLICT_NONE=Bilinen cakisan arac bulunamadi.
+LNX_DIAG_NFT_LABEL=nftables kurali     :
+LNX_DIAG_PRESENT=VAR
+LNX_DIAG_ABSENT=YOK
+LNX_DIAG_HINT_CERT=sertifika hatasi - genelde modemin sahte DNS cevaplarindan
+LNX_DIAG_HINT_RESET=baglanti sifirlandi - DPI engeli (Zapret calisiyor mu? profil ISS'ne uyuyor mu?)
+LNX_DIAG_HINT_TIMEOUT=zaman asimi
+LNX_DIAG_HINT_DNS=adres cozumlenemedi
+LNX_DNS_MANUAL_1=Simdilik elle cozum (NetworkManager), CONNECTION yerine su komuttaki baglanti adini yazin: nmcli con show --active
+LNX_DNS_MANUAL_2=sudo nmcli con mod CONNECTION ipv4.ignore-auto-dns yes ipv4.dns 1.1.1.1,1.0.0.1
+LNX_DNS_MANUAL_3=sudo nmcli con mod CONNECTION ipv6.ignore-auto-dns yes
+LNX_DNS_MANUAL_4=sudo nmcli con up CONNECTION

@@ -1,0 +1,50 @@
+# Zapret Turkey - Linux overlay (English)
+# Loaded AFTER the shared ..\lang\en.lang: keys here override the shared
+# ones (Windows wording) and add Linux-only keys (LNX_*).
+# Format: KEY=Value. Save as UTF-8 without BOM.
+
+# ---------- Generic ----------
+LNX_NEED_ROOT=Root privileges are required. Restarting with sudo...
+LNX_PRESS_ENTER=Press Enter to continue...
+LNX_NOT_YET=This section is not ready in the Linux version yet - it will be added in a later step.
+LNX_PROFILE_NONE=No profile files found in:
+LNX_LANG_CHANGED=Language changed:
+LNX_OPEN_FOLDER_FAIL=Could not open the file manager. Folder:
+LNX_NO_SYSTEMD=systemd was not found on this system.
+
+# ---------- Engine build (first run) ----------
+LNX_BUILD_PROMPT=The nfqws engine is not built yet. Build it now? (needs internet, about a minute) [Y/N]:
+LNX_BUILD_INSTALLING=Installing build packages...
+LNX_BUILD_DOWNLOADING=Downloading the zapret source...
+LNX_BUILD_COMPILING=Compiling nfqws...
+LNX_BUILD_DONE=Engine ready:
+LNX_BUILD_FAIL=Build failed. Read the error lines above.
+LNX_BUILD_NO_PM=No supported package manager (apt, dnf, pacman) found. Install the build dependencies by hand and build nfqws.
+
+# ---------- Wording that differs from Windows ----------
+EXIT_WINWS_STILL_RUNNING=nfqws is still running. Stop it? [Y/N]:
+STOP_OK=nfqws stopped.
+STOP_ALREADY_STOPPED=nfqws was not running.
+REASON_ENGINE_MISSING_HINT=nfqws is missing. Build it from the Start prompt or run the build command. Expected path:
+REASON_NOT_ADMIN_HINT=The program must run as root (sudo).
+REASON_NFT_MISSING_HINT=nft was not found. Install nftables first, for example: sudo apt install nftables
+REASON_NFT_FAILED_HINT=The nftables rule could not be added, so nfqws was stopped again.
+
+# ---------- Diagnostics wording ----------
+DIAG_ADMIN_LABEL=Root privileges     :
+DIAG_ENGINE_LABEL=nfqws               :
+DIAG_WINWS_STATUS_LABEL=nfqws status         :
+DIAG_CONFLICT_SECTION=--- Possible conflicting tools (official zapret) ---
+DIAG_CONFLICT_HINT=(another zapret setup is active - do not run it at the same time as Zapret Turkey)
+DIAG_CONFLICT_NONE=No known conflicting tool found.
+LNX_DIAG_NFT_LABEL=nftables rule       :
+LNX_DIAG_PRESENT=present
+LNX_DIAG_ABSENT=absent
+LNX_DIAG_HINT_CERT=certificate error - usually fake DNS answers from the modem
+LNX_DIAG_HINT_RESET=connection reset - DPI block (is Zapret running? does the profile fit your ISP?)
+LNX_DIAG_HINT_TIMEOUT=timed out
+LNX_DIAG_HINT_DNS=name could not be resolved
+LNX_DNS_MANUAL_1=Manual fix for now (NetworkManager), replace CONNECTION with your connection name from: nmcli con show --active
+LNX_DNS_MANUAL_2=sudo nmcli con mod CONNECTION ipv4.ignore-auto-dns yes ipv4.dns 1.1.1.1,1.0.0.1
+LNX_DNS_MANUAL_3=sudo nmcli con mod CONNECTION ipv6.ignore-auto-dns yes
+LNX_DNS_MANUAL_4=sudo nmcli con up CONNECTION

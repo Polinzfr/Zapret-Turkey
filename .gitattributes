@@ -1,3 +1,4 @@
    *.bat text eol=crlf
    *.vbs text eol=crlf
-   *.lang text eol=crlf
+   *.lang text eol=crlf*.sh text eol=lf
+linux/lang/*.lang text eol=lf
