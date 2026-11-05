@@ -413,6 +413,45 @@ engine_start_core() {
     return 0
 }
 
+# systemd servisi icin: nfqws'i arka plana ATMADAN, ana surec olarak calistirir.
+# (Eski oneshot yapisinda systemd, arka plandaki nfqws'i kapatiyordu.)
+cmd_run() {
+    local prof
+    load_settings
+    prof="$CURRENT_PROFILE"
+    ensure_dirs
+    CORE_REASON=""
+    if ! load_profile "$prof"; then
+        app_log "SERVICE RUN FAILED profile=$prof reason=$CORE_REASON"
+        echo "zapret-turkey: profile problem ($CORE_REASON): $prof" >&2
+        return 1
+    fi
+    if [ ! -x "$NFQWS" ]; then
+        app_log "SERVICE RUN FAILED profile=$prof reason=ENGINE_MISSING"
+        echo "zapret-turkey: engine missing: $NFQWS" >&2
+        return 1
+    fi
+    if ! command -v nft >/dev/null 2>&1; then
+        app_log "SERVICE RUN FAILED profile=$prof reason=NFT_MISSING"
+        echo "zapret-turkey: nft not found" >&2
+        return 1
+    fi
+    # menuden elle baslatilmis bir nfqws varsa temizle
+    stop_engine_core
+    prep_hostlists
+    modprobe nfnetlink_queue 2>/dev/null
+    sysctl -w net.netfilter.nf_conntrack_acct=1 >/dev/null 2>&1
+    # Kural once eklenir: 'bypass' sayesinde nfqws acilana kadar trafik normal akar.
+    if ! nft_apply; then
+        app_log "SERVICE RUN FAILED profile=$prof reason=NFT_FAILED"
+        echo "zapret-turkey: nftables rule could not be added" >&2
+        return 1
+    fi
+    app_log "SERVICE RUN profile=$prof"
+    exec "$NFQWS" --qnum="$QNUM" "${ARGS_ARR[@]}" "${HOST_ARGS[@]}" 2>> "$LOG_DIR/engine_stderr.log"
+    return 1
+}
+
 print_start_failure() {
     say "${C_RED}$(t START_FAILED)${C_RESET}"
     say "$(t START_FAILED_PROFILE_LABEL) $CURRENT_PROFILE"
@@ -772,26 +811,33 @@ After=network-online.target
 Wants=network-online.target
 
 [Service]
-Type=oneshot
-RemainAfterExit=yes
-TimeoutStartSec=60
-ExecStart="$SELF" start
-ExecStop="$SELF" stop
+Type=simple
+ExecStart="$SELF" run
+ExecStopPost="$SELF" nft-clean
+Restart=on-failure
+RestartSec=3
 
 [Install]
 WantedBy=multi-user.target
 EOF
     systemctl daemon-reload
-    if ! systemctl enable --now "$SERVICE_NAME"; then
+    if ! systemctl enable "$SERVICE_NAME" >/dev/null 2>&1 || ! systemctl restart "$SERVICE_NAME"; then
         say "${C_RED}$(t SVC_ERR_CREATE_FAILED)${C_RESET}"
         systemctl disable "$SERVICE_NAME" >/dev/null 2>&1
         rm -f "$SERVICE_FILE"
         systemctl daemon-reload >/dev/null 2>&1
         return 1
     fi
-    say "${C_GREEN}$(t SVC_INSTALLED_LABEL)${C_RESET} $SERVICE_NAME"
-    app_log "SERVICE INSTALLED profile=$CURRENT_PROFILE"
-    return 0
+    sleep 3
+    if is_running; then
+        say "${C_GREEN}$(t SVC_INSTALLED_LABEL)${C_RESET} $SERVICE_NAME"
+        app_log "SERVICE INSTALLED profile=$CURRENT_PROFILE"
+        return 0
+    fi
+    say "${C_RED}$(t LNX_SVC_NOT_RUNNING)${C_RESET}"
+    say "  journalctl -u $SERVICE_NAME -n 30 --no-pager"
+    app_log "SERVICE INSTALLED BUT NFQWS NOT RUNNING profile=$CURRENT_PROFILE"
+    return 1
 }
 
 svc_uninstall() {
@@ -815,7 +861,11 @@ svc_control() { # $1 = start|stop
         say "$(t SVC_NOT_INSTALLED_MSG)"
         return 0
     fi
-    systemctl "$1" "$SERVICE_NAME" || say "${C_RED}$(t SVC_ERR_CREATE_FAILED)${C_RESET}"
+    systemctl "$1" "$SERVICE_NAME" || { say "${C_RED}$(t SVC_ERR_CREATE_FAILED)${C_RESET}"; return 1; }
+    if [ "$1" = "start" ]; then
+        sleep 2
+        is_running || say "${C_RED}$(t LNX_SVC_NOT_RUNNING)${C_RESET}"
+    fi
 }
 
 service_menu() {
@@ -1314,6 +1364,8 @@ case "${1:-menu}" in
         ensure_dirs
         main_menu
         ;;
+    run)               init_lang; need_root "$@"; cmd_run; exit $? ;;
+    nft-clean)         need_root "$@"; nft_remove; exit 0 ;;
     start)             init_lang; need_root "$@"; ensure_dirs; start_engine; exit $? ;;
     stop)              init_lang; need_root "$@"; stop_engine; exit $? ;;
     restart)           init_lang; need_root "$@"; stop_engine_core; start_engine; exit $? ;;
