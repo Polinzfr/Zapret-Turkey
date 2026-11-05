@@ -482,7 +482,8 @@ stop_engine() {
 # Profil menusu
 # ------------------------------------------------------------
 change_profile() {
-    local n ch id
+    local n ch id mark
+    load_settings
     clear_screen
     list_profiles
     if [ "${#PROFILE_IDS[@]}" -eq 0 ]; then
@@ -490,11 +491,15 @@ change_profile() {
         pause_
         return 0
     fi
+    say "  $(t LBL_PROFILE) : $CURRENT_PROFILE ($(display_name "$CURRENT_PROFILE"))"
+    say ""
     say "$(t CHANGE_PROFILE_PROMPT)"
     say ""
     n=1
     for id in "${PROFILE_IDS[@]}"; do
-        printf '  [%d] %-14s - %s\n' "$n" "$id" "$(display_name "$id")"
+        mark=""
+        [ "$id" = "$CURRENT_PROFILE" ] && mark="  ${C_GREEN}<-- $(t LNX_CURRENT_MARK)${C_RESET}"
+        printf '  [%d] %-14s - %s%s\n' "$n" "$id" "$(display_name "$id")" "$mark"
         n=$((n + 1))
     done
     say "  [0] $(t CHANGE_PROFILE_CANCEL)"
@@ -517,8 +522,10 @@ change_profile() {
 profile_menu() {
     local ch
     while true; do
+        load_settings
         clear_screen
         say "${C_CYAN}$(t PMENU_TITLE)${C_RESET}"
+        say "  $(t LBL_PROFILE) : $CURRENT_PROFILE ($(display_name "$CURRENT_PROFILE"))"
         say ""
         say "  $(t PMENU_OPT_CHANGE)"
         say "  $(t PMENU_OPT_EXPORT)"
@@ -538,12 +545,20 @@ profile_menu() {
 # ------------------------------------------------------------
 # Tanilama
 # ------------------------------------------------------------
+# Varsayilan rotanin cikis arayuzu (ornek: wlp3s0b1). Tailscale/VPN gibi
+# ek arayuzler DNS ve IPv6 tespitini karistirmasin diye hep bunun uzerinden bakilir.
+default_dev() {
+    ip route show default 2>/dev/null | awk '{for (i = 1; i < NF; i++) if ($i == "dev") { print $(i + 1); exit }}'
+}
+
 first_dns() {
-    local d=""
+    local d="" dev out
+    dev="$(default_dev)"
     if command -v resolvectl >/dev/null 2>&1; then
-        d="$(resolvectl status 2>/dev/null | awk -F': *' '/Current DNS Server/{print $2; exit}')"
+        if [ -n "$dev" ]; then out="$(resolvectl status "$dev" 2>/dev/null)"; else out="$(resolvectl status 2>/dev/null)"; fi
+        d="$(printf '%s\n' "$out" | sed -n 's/^ *Current DNS Server: *//p' | head -n 1)"
         if [ -z "$d" ]; then
-            d="$(resolvectl status 2>/dev/null | awk -F': *' '/DNS Servers/{split($2,a," "); print a[1]; exit}')"
+            d="$(printf '%s\n' "$out" | sed -n 's/^ *DNS Servers: *//p' | head -n 1 | awk '{print $1}')"
         fi
     fi
     [ -n "$d" ] || d="$(awk '/^nameserver/{print $2; exit}' /etc/resolv.conf 2>/dev/null)"
@@ -644,10 +659,6 @@ diag_dns() {
         else
             say "${C_YELLOW}$(t DIAG_DNS_VERDICT_OTHER_DIFF)${C_RESET}"
         fi
-        say "$(t LNX_DNS_MANUAL_1)"
-        say "  $(t LNX_DNS_MANUAL_2)"
-        say "  $(t LNX_DNS_MANUAL_3)"
-        say "  $(t LNX_DNS_MANUAL_4)"
     elif [ "$priv" = "1" ]; then
         say "${C_YELLOW}$(t DIAG_DNS_VERDICT_MODEM_OK)${C_RESET}"
     else
@@ -658,7 +669,7 @@ diag_dns() {
 }
 
 diagnostics() {
-    local a4 a6 conflicts=() c u
+    local a4 a6 dev conflicts=() c u
     load_settings
     clear_screen
     say "${C_CYAN}$(t DIAG_TITLE)${C_RESET}"
@@ -713,8 +724,13 @@ diagnostics() {
 
     say ""
     say "$(t DIAG_CONN_SECTION)"
-    a4="$(ip -4 -o addr show scope global 2>/dev/null | awk '{print $4; exit}')"
-    a6="$(ip -6 -o addr show scope global 2>/dev/null | awk '{print $4; exit}')"
+    dev="$(default_dev)"
+    if [ -n "$dev" ]; then
+        a4="$(ip -4 -o addr show dev "$dev" scope global 2>/dev/null | awk '{print $4; exit}')"
+        a6="$(ip -6 -o addr show dev "$dev" scope global 2>/dev/null | awk '{print $4; exit}')"
+    else
+        a4=""; a6=""
+    fi
     say "$(t DIAG_IPV4_LABEL) ${a4:-$(t DIAG_STATUS_NONE)}"
     say "$(t DIAG_IPV6_LABEL) ${a6:-$(t DIAG_STATUS_NONE)}"
 
@@ -828,6 +844,268 @@ service_menu() {
 }
 
 # ------------------------------------------------------------
+# DNS Yardimcisi (NetworkManager / nmcli)
+# ------------------------------------------------------------
+dns_nm_ready() {
+    command -v nmcli >/dev/null 2>&1 && nmcli -t -f RUNNING general 2>/dev/null | grep -qx running
+}
+
+# Aktif ethernet/wifi baglantilari (varsayilan rota arayuzu en basta).
+# Doldurur: NM_UUIDS, NM_NAMES, NM_DEVS
+nm_active_connections() {
+    NM_UUIDS=(); NM_NAMES=(); NM_DEVS=()
+    local uuid type cdev name defdev
+    defdev="$(default_dev)"
+    while IFS=: read -r uuid type cdev name; do
+        [ -n "$uuid" ] || continue
+        case "$type" in
+            802-3-ethernet|802-11-wireless|ethernet|wifi) ;;
+            *) continue ;;
+        esac
+        if [ -n "$defdev" ] && [ "$cdev" = "$defdev" ]; then
+            NM_UUIDS=("$uuid" "${NM_UUIDS[@]}")
+            NM_NAMES=("$name" "${NM_NAMES[@]}")
+            NM_DEVS=("$cdev" "${NM_DEVS[@]}")
+        else
+            NM_UUIDS+=("$uuid")
+            NM_NAMES+=("$name")
+            NM_DEVS+=("$cdev")
+        fi
+    done < <(nmcli -t -f UUID,TYPE,DEVICE,NAME con show --active 2>/dev/null)
+}
+
+# Doldurur: SEL_UUID, SEL_NAME, SEL_DEV. Iptal/basarisizlik: 1 doner.
+choose_connection() {
+    local ch i n name
+    SEL_UUID=""; SEL_NAME=""; SEL_DEV=""
+    say "$(t DNS_ASSIST_DETECTING)"
+    nm_active_connections
+    n="${#NM_UUIDS[@]}"
+    if [ "$n" -eq 1 ]; then
+        say "$(t DNS_ASSIST_FOUND_ONE) ${NM_NAMES[0]} (${NM_DEVS[0]})"
+        if ask_yn "$(t DNS_CLOUDFLARE_CONFIRM)"; then
+            SEL_UUID="${NM_UUIDS[0]}"; SEL_NAME="${NM_NAMES[0]}"; SEL_DEV="${NM_DEVS[0]}"
+            return 0
+        fi
+    elif [ "$n" -gt 1 ]; then
+        say "$(t DNS_ASSIST_FOUND_MULTI)"
+        for i in $(seq 0 $((n - 1))); do
+            printf '  [%d] %s (%s)\n' "$((i + 1))" "${NM_NAMES[$i]}" "${NM_DEVS[$i]}"
+        done
+        say "  $(t DNS_PROVIDER_CANCEL)"
+        prompt_choice ch
+        if [[ "$ch" =~ ^[0-9]+$ ]] && [ "$ch" -ge 1 ] && [ "$ch" -le "$n" ]; then
+            SEL_UUID="${NM_UUIDS[$((ch - 1))]}"; SEL_NAME="${NM_NAMES[$((ch - 1))]}"; SEL_DEV="${NM_DEVS[$((ch - 1))]}"
+            return 0
+        fi
+        return 1
+    else
+        say "$(t DNS_ASSIST_NONE_FOUND)"
+    fi
+    read -r -p "$(t DNS_ASSIST_MANUAL_FALLBACK) " name || return 1
+    [ -n "$name" ] || return 1
+    SEL_UUID="$(nmcli -g connection.uuid con show "$name" 2>/dev/null | head -n 1)"
+    if [ -z "$SEL_UUID" ]; then
+        say "${C_RED}$(t LNX_DNS_CONN_UNKNOWN)${C_RESET} $name"
+        return 1
+    fi
+    SEL_NAME="$name"
+    SEL_DEV="$(nmcli -g connection.interface-name con show "$name" 2>/dev/null | head -n 1)"
+    return 0
+}
+
+dns_apply_and_verify() { # $1=uuid  (nmcli ayarlari zaten yapildi)
+    if ! nmcli con up uuid "$1" >/dev/null 2>&1; then
+        say "${C_YELLOW}$(t LNX_DNS_UP_FAILED)${C_RESET}"
+    fi
+    resolvectl flush-caches >/dev/null 2>&1
+    sleep 2
+}
+
+dns_assist() {
+    local ch prov d4 d6 set6=0 has6=0 dev v6_4 v6_6
+    clear_screen
+    if ! dns_nm_ready; then
+        say "${C_YELLOW}$(t LNX_DNS_NO_NM)${C_RESET}"
+        pause_
+        return 0
+    fi
+    say "${C_YELLOW}$(t DNS_CLOUDFLARE_WARN)${C_RESET}"
+    say "$(t DNS_CLOUDFLARE_INFO_1)"
+    say "$(t DNS_CLOUDFLARE_INFO_2)"
+    say ""
+    choose_connection || { pause_; return 0; }
+
+    say ""
+    say "$(t DNS_PROVIDER_PROMPT)"
+    say "  $(t DNS_PROVIDER_CLOUDFLARE)"
+    say "  $(t DNS_PROVIDER_GOOGLE)"
+    say "  $(t DNS_PROVIDER_CANCEL)"
+    prompt_choice ch
+    case "$ch" in
+        1) prov="cloudflare"; d4="1.1.1.1 1.0.0.1"; d6="2606:4700:4700::1111 2606:4700:4700::1001" ;;
+        2) prov="google";     d4="8.8.8.8 8.8.4.4"; d6="2001:4860:4860::8888 2001:4860:4860::8844" ;;
+        *) return 0 ;;
+    esac
+
+    dev="${SEL_DEV:-$(default_dev)}"
+    if [ -n "$dev" ] && ip -6 -o addr show dev "$dev" scope global 2>/dev/null | grep -q .; then has6=1; fi
+    if [ "$has6" = "1" ]; then
+        say "$(t DNS_IPV6_DETECTED)"
+        ask_yn "$(t DNS_IPV6_OFFER_PROMPT)" && set6=1
+    else
+        say "${C_GRAY}$(t DNS_IPV6_NONE)${C_RESET}"
+    fi
+
+    say "$(t DNS_ASSIST_APPLYING)"
+    say "${C_GRAY}$(t LNX_DNS_RECONNECT_NOTE)${C_RESET}"
+    if ! nmcli con mod uuid "$SEL_UUID" ipv4.ignore-auto-dns yes ipv4.dns "$d4"; then
+        say "${C_RED}$(t LNX_DNS_APPLY_FAILED)${C_RESET}"
+        pause_
+        return 1
+    fi
+    # Modemin (olmayan) IPv6 DNS'i her zaman listeden cikar; sadece gercek IPv6 varsa kendi IPv6 DNS'imizi ekle.
+    if [ "$set6" = "1" ]; then
+        nmcli con mod uuid "$SEL_UUID" ipv6.ignore-auto-dns yes ipv6.dns "$d6"
+    else
+        nmcli con mod uuid "$SEL_UUID" ipv6.ignore-auto-dns yes ipv6.dns ""
+    fi
+    dns_apply_and_verify "$SEL_UUID"
+
+    say "$(t DNS_ASSIST_VERIFY_TITLE)"
+    say "$(t DNS_ASSIST_VERIFY_LABEL) $(sys_lookup discord.com | tr '\n' ' ')"
+    set_setting DNS_MODE "$prov"
+    app_log "DNS ASSISTANT provider=$prov connection=$SEL_NAME ipv6=$set6"
+    say "${C_GREEN}$(t DNS_CLOUDFLARE_DONE)${C_RESET}"
+    say "$(t DNS_ASSIST_DONE)"
+    pause_
+}
+
+dns_reset() {
+    clear_screen
+    if ! dns_nm_ready; then
+        say "${C_YELLOW}$(t LNX_DNS_NO_NM)${C_RESET}"
+        pause_
+        return 0
+    fi
+    choose_connection || { pause_; return 0; }
+    say "$(t DNS_ASSIST_APPLYING)"
+    say "${C_GRAY}$(t LNX_DNS_RECONNECT_NOTE)${C_RESET}"
+    if ! nmcli con mod uuid "$SEL_UUID" ipv4.ignore-auto-dns no ipv4.dns "" ipv6.ignore-auto-dns no ipv6.dns ""; then
+        say "${C_RED}$(t LNX_DNS_APPLY_FAILED)${C_RESET}"
+        pause_
+        return 1
+    fi
+    dns_apply_and_verify "$SEL_UUID"
+    set_setting DNS_MODE system
+    app_log "DNS RESET connection=$SEL_NAME"
+    say "${C_GREEN}$(t DNS_DHCP_DONE)${C_RESET}"
+    pause_
+}
+
+# ------------------------------------------------------------
+# Otomatik Test
+# ------------------------------------------------------------
+# Her profili sirayla baslatir, Discord/Roblox/Steam'e curl ile baglanmayi dener.
+auto_test() {
+    local id host rc passed sys cf svc_was=0
+    local res_ids=() res_vals=() first_pass=""
+    clear_screen
+    say "${C_CYAN}$(t AUTOTEST_TITLE)${C_RESET}"
+    say "$(t AUTOTEST_INFO_1)"
+    say "$(t AUTOTEST_INFO_2)"
+    say "$(t AUTOTEST_INFO_3)"
+    say "$(t AUTOTEST_INFO_4)"
+    say ""
+    if ! command -v curl >/dev/null 2>&1; then
+        say "${C_RED}$(t AUTOTEST_CURL_MISSING)${C_RESET}"
+        pause_
+        return 0
+    fi
+    list_profiles
+    if [ "${#PROFILE_IDS[@]}" -eq 0 ]; then
+        say "$(t LNX_PROFILE_NONE) $PROFILE_DIR"
+        pause_
+        return 0
+    fi
+    if [ ! -x "$NFQWS" ]; then
+        say "${C_RED}$(t REASON_ENGINE_MISSING_HINT)${C_RESET} $NFQWS"
+        pause_
+        return 0
+    fi
+    # Sahte DNS testi bozar: baslamadan once uyar
+    sys="$(sys_lookup discord.com | tr '\n' ' ')"
+    cf="$(cf_lookup discord.com | tr '\n' ' ')"
+    if [ -n "$cf" ] && ! overlap "$sys" "$cf"; then
+        say "${C_YELLOW}$(t LNX_AUTOTEST_DNS_WARN)${C_RESET}"
+        say ""
+    fi
+    ask_yn "$(t AUTOTEST_CONTINUE_PROMPT)" || return 0
+
+    if command -v systemctl >/dev/null 2>&1 && systemctl is-active --quiet "$SERVICE_NAME" 2>/dev/null; then
+        svc_was=1
+    fi
+
+    for id in "${PROFILE_IDS[@]}"; do
+        say ""
+        say "${C_CYAN}$(t AUTOTEST_TESTING_LABEL) $id ($(display_name "$id")) ---${C_RESET}"
+        engine_start_core "$id"
+        if [ "$CORE_OK" != "1" ]; then
+            say "${C_RED}$(t AUTOTEST_START_FAILED_LABEL)${C_RESET} $CORE_REASON"
+            res_ids+=("$id"); res_vals+=("FAIL")
+            continue
+        fi
+        say "$(t AUTOTEST_CONNECTING)"
+        passed=1
+        for host in $TEST_HOSTS; do
+            curl -sS -o /dev/null -m 6 "https://$host" >/dev/null 2>&1
+            rc=$?
+            if [ "$rc" -eq 0 ]; then
+                say "  $host : ${C_GREEN}$(t DIAG_TEST_OK)${C_RESET}"
+            else
+                say "  $host : ${C_RED}$(t DIAG_TEST_FAIL)${C_RESET}"
+                passed=0
+            fi
+        done
+        stop_engine_core
+        if [ "$passed" = "1" ]; then
+            say "${C_GREEN}$(t AUTOTEST_PASS)${C_RESET}"
+            res_ids+=("$id"); res_vals+=("PASS")
+            [ -n "$first_pass" ] || first_pass="$id"
+        else
+            say "${C_RED}$(t AUTOTEST_FAIL)${C_RESET}"
+            res_ids+=("$id"); res_vals+=("FAIL")
+        fi
+    done
+    stop_engine_core
+
+    say ""
+    say "${C_CYAN}================= $(t AUTOTEST_RESULTS_TITLE) =================${C_RESET}"
+    local i
+    for i in "${!res_ids[@]}"; do
+        printf '  %-14s = %s\n' "${res_ids[$i]}" "${res_vals[$i]}"
+        app_log "AUTOTEST ${res_ids[$i]}=${res_vals[$i]}"
+    done
+    say ""
+    if [ -n "$first_pass" ]; then
+        say "${C_GREEN}$(t AUTOTEST_RECOMMENDED)${C_RESET} $first_pass"
+        if ask_yn "$(t AUTOTEST_SAVE_PROMPT)"; then
+            set_setting CURRENT_PROFILE "$first_pass"
+            say "$(t AUTOTEST_SAVED)"
+        fi
+    else
+        say "${C_RED}$(t AUTOTEST_NONE_PASSED)${C_RESET}"
+        say "$(t AUTOTEST_NONE_PASSED_HINT)"
+    fi
+
+    # Hizmet calisiyorduysa test bitince eski haline dondur
+    if [ "$svc_was" = "1" ]; then
+        systemctl restart "$SERVICE_NAME" >/dev/null 2>&1
+    fi
+    pause_
+}
+
+# ------------------------------------------------------------
 # Ayarlar ve Gunlukler
 # ------------------------------------------------------------
 settings_menu() {
@@ -851,7 +1129,8 @@ settings_menu() {
         case "$ch" in
             1) set_setting DNS_MODE system
                say "$(t SETTINGS_DNS_TAG_UPDATED)"; pause_ ;;
-            2|3) say "$(t LNX_NOT_YET)"; pause_ ;;
+            2) dns_assist ;;
+            3) dns_reset ;;
             4) if [ "$DEBUG" = "1" ]; then
                    set_setting DEBUG 0; say "$(t DEBUG_TAG_OFF)"
                else
@@ -961,7 +1240,8 @@ main_menu() {
             1) start_engine ;;
             2) stop_engine ;;
             3) profile_menu ;;
-            4|9) say "$(t LNX_NOT_YET)"; pause_ ;;
+            4) auto_test ;;
+            9) say "$(t LNX_NOT_YET)"; pause_ ;;
             5) service_menu ;;
             6) diagnostics ;;
             7) settings_menu ;;
