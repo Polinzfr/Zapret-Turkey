@@ -1236,6 +1236,279 @@ logs_menu() {
 }
 
 # ------------------------------------------------------------
+# Araclar (Tools) - Adim 3
+# ------------------------------------------------------------
+# "https://Ornek.com/yol?x" -> "ornek.com"
+norm_host() {
+    local s="$1"
+    s="${s,,}"
+    s="${s//[[:space:]]/}"
+    s="${s#*://}"
+    s="${s%%[/?#]*}"
+    s="${s##*@}"
+    s="${s%%:*}"
+    printf '%s' "$s"
+}
+
+valid_host() { [[ "$1" =~ ^[a-z0-9]([a-z0-9.-]*[a-z0-9])?$ ]]; }
+
+# Liste degisince: servis ya da elle baslatilmis nfqws calisiyorsa yeniden baslatmayi sorar
+sitelist_restart_if_running() {
+    local svc=0
+    if command -v systemctl >/dev/null 2>&1 && systemctl is-active --quiet "$SERVICE_NAME" 2>/dev/null; then
+        svc=1
+    elif ! is_running; then
+        return 0
+    fi
+    ask_yn "$(t SITELIST_RESTART_PROMPT)" || return 0
+    if [ "$svc" = "1" ]; then
+        if systemctl restart "$SERVICE_NAME" 2>/dev/null; then
+            sleep 2
+            if is_running; then
+                say "${C_GREEN}$(t SITELIST_RESTART_DONE)${C_RESET}"
+            else
+                say "${C_RED}$(t LNX_SVC_NOT_RUNNING)${C_RESET}"
+            fi
+        else
+            say "${C_RED}$(t START_FAILED)${C_RESET}"
+        fi
+    else
+        load_settings
+        engine_start_core "$CURRENT_PROFILE"
+        if [ "$CORE_OK" = "1" ]; then
+            say "${C_GREEN}$(t SITELIST_RESTART_DONE)${C_RESET}"
+            app_log "RESTART (site list) profile=$CURRENT_PROFILE"
+        else
+            print_start_failure
+            app_log "RESTART FAILED (site list) reason=$CORE_REASON"
+        fi
+    fi
+}
+
+# $1 = dosya yolu
+edit_list_show() {
+    echo
+    if [ -s "$1" ]; then
+        tr -d '\r' < "$1"
+    else
+        say "$(t SITELIST_EMPTY)"
+    fi
+    echo
+    pause_
+}
+
+edit_list_add() {
+    local f="$1" site eol=$'\n'
+    read -r -p "$(t SITELIST_ADD_PROMPT) " site || site=""
+    site="$(norm_host "$site")"
+    if [ -z "$site" ]; then
+        say "$(t TESTSITE_EMPTY)"; pause_; return 0
+    fi
+    if ! valid_host "$site"; then
+        say "${C_RED}$(t LNX_SITE_INVALID)${C_RESET} $site"; pause_; return 0
+    fi
+    if [ -f "$f" ] && tr -d '\r' < "$f" | grep -qixF -- "$site"; then
+        say "$(t SITELIST_ADD_DUPLICATE) $site"; pause_; return 0
+    fi
+    # dosya CRLF ise ayni satir sonunu kullan (git'te gereksiz fark olusmasin)
+    grep -q $'\r' "$f" 2>/dev/null && eol=$'\r\n'
+    if [ -s "$f" ] && [ -n "$(tail -c1 "$f")" ]; then
+        printf '%s' "$eol" >> "$f"
+    fi
+    if ! printf '%s%s' "$site" "$eol" >> "$f" 2>/dev/null; then
+        say "${C_RED}$(t LNX_SITELIST_SAVE_FAIL)${C_RESET} $f"; pause_; return 0
+    fi
+    fix_owner "$f"
+    app_log "SITELIST ADD $(basename "$f") $site"
+    say "$(t SITELIST_ADD_DONE) $site"
+    sitelist_restart_if_running
+    pause_
+}
+
+edit_list_remove() {
+    local f="$1" lines=() nums=() i k=0 n del ln site
+    if [ ! -s "$f" ]; then
+        say "$(t SITELIST_EMPTY)"; pause_; return 0
+    fi
+    mapfile -t lines < <(tr -d '\r' < "$f")
+    for i in "${!lines[@]}"; do
+        [ -n "${lines[$i]//[[:space:]]/}" ] || continue
+        k=$((k + 1))
+        nums[$k]=$((i + 1))
+        say "  [$k] ${lines[$i]}"
+    done
+    if [ "$k" -eq 0 ]; then
+        say "$(t SITELIST_EMPTY)"; pause_; return 0
+    fi
+    echo
+    read -r -p "$(t SITELIST_REMOVE_PROMPT) " del || del=""
+    if [ -z "$del" ]; then
+        say "$(t TESTSITE_EMPTY)"; pause_; return 0
+    fi
+    if ! [[ "$del" =~ ^[0-9]+$ ]] || [ "$del" -lt 1 ] || [ "$del" -gt "$k" ]; then
+        say "$(t SITELIST_REMOVE_INVALID) $del"; pause_; return 0
+    fi
+    ln="${nums[$del]}"
+    site="${lines[$((ln - 1))]}"
+    if ! sed -i "${ln}d" "$f" 2>/dev/null; then
+        say "${C_RED}$(t LNX_SITELIST_SAVE_FAIL)${C_RESET} $f"; pause_; return 0
+    fi
+    fix_owner "$f"
+    app_log "SITELIST REMOVE $(basename "$f") $site"
+    say "$(t SITELIST_REMOVE_DONE) $site"
+    sitelist_restart_if_running
+    pause_
+}
+
+# $1 = dosya yolu, $2 = baslik
+edit_list() {
+    local f="$1" name="$2" ch
+    while true; do
+        clear_screen
+        say "${C_CYAN}============================================================${C_RESET}"
+        say "  $name"
+        say "${C_CYAN}============================================================${C_RESET}"
+        say ""
+        say "  $(t SITELIST_OPT_SHOW)"
+        say "  $(t SITELIST_OPT_ADD)"
+        say "  $(t SITELIST_OPT_REMOVE)"
+        say "  $(t SVC_MENU_BACK)"
+        say ""
+        prompt_choice ch
+        case "$ch" in
+            1) edit_list_show "$f" ;;
+            2) edit_list_add "$f" ;;
+            3) edit_list_remove "$f" ;;
+            0) return 0 ;;
+        esac
+    done
+}
+
+site_list_menu() {
+    local ch
+    while true; do
+        clear_screen
+        say "${C_CYAN}============================================================${C_RESET}"
+        say "  $(t TOOLS_OPT_SITELIST)"
+        say "${C_CYAN}============================================================${C_RESET}"
+        say "  ${C_CYAN}[1]${C_RESET}  $(t SITELIST_TARGET_LABEL)"
+        say "  ${C_CYAN}[2]${C_RESET}  $(t SITELIST_EXCLUDE_LABEL)"
+        say "  $(t SVC_MENU_BACK)"
+        say ""
+        prompt_choice ch
+        case "$ch" in
+            1) edit_list "$PROFILE_DIR/target-hosts.txt" "$(t SITELIST_TARGET_LABEL)" ;;
+            2) edit_list "$PROFILE_DIR/exclude-hosts.txt" "$(t SITELIST_EXCLUDE_LABEL)" ;;
+            0) return 0 ;;
+        esac
+    done
+}
+
+test_site() {
+    local site rc hint
+    clear_screen
+    say "${C_CYAN}============================================================${C_RESET}"
+    say "  $(t TESTSITE_TITLE)"
+    say "${C_CYAN}============================================================${C_RESET}"
+    say ""
+    if ! command -v curl >/dev/null 2>&1; then
+        say "${C_RED}$(t AUTOTEST_CURL_MISSING)${C_RESET}"; pause_; return 0
+    fi
+    read -r -p "$(t TESTSITE_PROMPT) " site || site=""
+    site="$(norm_host "$site")"
+    if [ -z "$site" ]; then
+        say "$(t TESTSITE_EMPTY)"; pause_; return 0
+    fi
+    if ! valid_host "$site"; then
+        say "${C_RED}$(t LNX_SITE_INVALID)${C_RESET} $site"; pause_; return 0
+    fi
+    is_running || say "${C_YELLOW}$(t TESTSITE_NOT_RUNNING_WARN)${C_RESET}"
+    say ""
+    say "$(t TESTSITE_TESTING) $site"
+    curl -sS -o /dev/null -m 6 "https://$site" >/dev/null 2>&1
+    rc=$?
+    if [ "$rc" -eq 0 ]; then
+        say "${C_GREEN}$(t TESTSITE_PASS)${C_RESET}"
+    else
+        hint="$(curl_hint "$rc")"
+        say "${C_RED}$(t TESTSITE_FAIL)${C_RESET}  ${C_GRAY}${hint}${C_RESET}"
+    fi
+    say ""
+    pause_
+}
+
+debug_panel() {
+    local conf args port yn
+    clear_screen
+    load_settings
+    say "${C_CYAN}============================================================${C_RESET}"
+    say "  $(t DEBUG_TITLE)"
+    say "${C_CYAN}============================================================${C_RESET}"
+    say "$(t DEBUG_ROOT_LABEL) $ROOT"
+    say "$(t DEBUG_ENGINE_DIR_LABEL) $ENGINE_DIR"
+    say "$(t DEBUG_PROFILE_DIR_LABEL) $PROFILE_DIR"
+    say "$(t DEBUG_LOG_DIR_LABEL) $LOG_DIR"
+    say ""
+    say "$(t DEBUG_PROFILE_ID_LABEL) $CURRENT_PROFILE"
+    say "$(t DEBUG_PROFILE_NAME_LABEL) $(display_name "$CURRENT_PROFILE")"
+    conf="$PROFILE_DIR/$CURRENT_PROFILE.conf"
+    say "$(t DEBUG_PROFILE_FILE_LABEL) $conf"
+    if [ -f "$conf" ]; then say "$(t DEBUG_FILE_EXISTS)"; else say "$(t DEBUG_FILE_MISSING)"; fi
+    args="$(profile_value "$conf" ARGS)"
+    port="$(profile_value "$conf" PORT_TCP)"
+    [ -n "$port" ] || port=443
+    say "$(t DEBUG_PARSED_PORT_LABEL) $port"
+    say "$(t DEBUG_PARSED_ARGS_LABEL) $args"
+    say ""
+    if [ "$(id -u)" -eq 0 ]; then yn="$(t DEBUG_YES)"; else yn="$(t DEBUG_NO)"; fi
+    say "$(t DEBUG_ADMIN_LABEL) $yn"
+    if is_running; then
+        say "$(t DEBUG_WINWS_STATUS_LABEL) $(t DEBUG_WINWS_RUNNING)"
+    else
+        say "$(t DEBUG_WINWS_STATUS_LABEL) $(t DEBUG_WINWS_NOT_RUNNING)"
+    fi
+    if nft_present; then yn="$(t LNX_DIAG_PRESENT)"; else yn="$(t LNX_DIAG_ABSENT)"; fi
+    say "$(t LNX_DIAG_NFT_LABEL) $yn"
+    if svc_installed; then yn="$(t SVC_INSTALLED)"; else yn="$(t SVC_NOT_INSTALLED)"; fi
+    say "$(t DEBUG_SVC_STATUS_LABEL) $yn"
+    say ""
+    say "$(t DEBUG_LAST_CALL_TITLE)"
+    if [ -n "${CORE_CMDLINE:-}" ]; then
+        say "$(t DEBUG_CMDLINE_LABEL) $CORE_CMDLINE"
+        say "$(t DEBUG_RESULT_LABEL) ${CORE_REASON:-}"
+        [ -z "${CORE_STDERR_TAIL:-}" ] || say "$(t DEBUG_STDERR_LABEL) $CORE_STDERR_TAIL"
+    else
+        say "$(t DEBUG_NO_CALL_YET)"
+    fi
+    say ""
+    say "$(t DEBUG_LOG_FILES_LABEL) $LOG_DIR"
+    say "${C_CYAN}============================================================${C_RESET}"
+    pause_
+}
+
+tools_menu() {
+    local ch
+    while true; do
+        clear_screen
+        say "${C_CYAN}============================================================${C_RESET}"
+        say "  $(t TOOLS_TITLE)"
+        say "${C_CYAN}============================================================${C_RESET}"
+        say "  $(t TOOLS_OPT_SITELIST)"
+        say "  $(t TOOLS_OPT_TESTSITE)"
+        say "  $(t TOOLS_OPT_DEBUG)"
+        say "  $(t SVC_MENU_BACK)"
+        say ""
+        prompt_choice ch
+        case "$ch" in
+            1) site_list_menu ;;
+            2) test_site ;;
+            3) debug_panel ;;
+            0) return 0 ;;
+        esac
+    done
+}
+
+# ------------------------------------------------------------
 # Ana menu
 # ------------------------------------------------------------
 exit_app() {
@@ -1291,7 +1564,7 @@ main_menu() {
             2) stop_engine ;;
             3) profile_menu ;;
             4) auto_test ;;
-            9) say "$(t LNX_NOT_YET)"; pause_ ;;
+            9) tools_menu ;;
             5) service_menu ;;
             6) diagnostics ;;
             7) settings_menu ;;
