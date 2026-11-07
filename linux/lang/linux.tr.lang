@@ -45,7 +45,29 @@ LNX_DIAG_HINT_CERT=sertifika hatasi - genelde modemin sahte DNS cevaplarindan
 LNX_DIAG_HINT_RESET=baglanti sifirlandi - DPI engeli (Zapret calisiyor mu? profil ISS'ne uyuyor mu?)
 LNX_DIAG_HINT_TIMEOUT=zaman asimi
 LNX_DIAG_HINT_DNS=adres cozumlenemedi
-LNX_DNS_MANUAL_1=Simdilik elle cozum (NetworkManager), CONNECTION yerine su komuttaki baglanti adini yazin: nmcli con show --active
-LNX_DNS_MANUAL_2=sudo nmcli con mod CONNECTION ipv4.ignore-auto-dns yes ipv4.dns 1.1.1.1,1.0.0.1
-LNX_DNS_MANUAL_3=sudo nmcli con mod CONNECTION ipv6.ignore-auto-dns yes
-LNX_DNS_MANUAL_4=sudo nmcli con up CONNECTION
+
+# ---------- Adim 2: DNS Yardimcisi, Otomatik Test, profil isareti ----------
+LNX_CURRENT_MARK=secili
+LNX_DNS_NO_NM=NetworkManager (nmcli) bulunamadi ya da calismiyor, DNS Yardimcisi buna ihtiyac duyar. DNS sunucularini ag ayarlarindan elle girin: 1.1.1.1 ve 1.0.0.1
+LNX_DNS_CONN_UNKNOWN=Bu adda bir baglanti yok:
+LNX_DNS_APPLY_FAILED=DNS ayarlari uygulanamadi.
+LNX_DNS_UP_FAILED=Baglanti otomatik yeniden baslatilamadi. Ayarlar kaydedildi - aga elle yeniden baglanin.
+LNX_DNS_RECONNECT_NOTE=Baglanti bir an yeniden baslar, Wi-Fi kisa sure kopabilir.
+LNX_AUTOTEST_DNS_WARN=Uyari: sistem DNS'iniz discord.com icin Cloudflare'dan farkli bir adres veriyor. Sahte DNS cevaplari her profili FAIL yapar - once Ayarlar - DNS Yardimcisi ile duzeltin, sonra testi calistirin.
+DNS_CLOUDFLARE_WARN=UYARI: Bu islem ag baglantinizin (NetworkManager) DNS ayarini degistirir.
+DNS_CLOUDFLARE_INFO_2=bu secimi yapmaniz halinde uygulanir. Ayarlar - [3] ile geri alinabilir.
+AUTOTEST_INFO_1=Bu islem sirasinda nfqws birkac kez yeniden baslatilacak.
+AUTOTEST_CURL_MISSING=[HATA] curl bulunamadi. Once kurun, ornek: sudo apt install curl
+AUTOTEST_NONE_PASSED_HINT=Tanilama menusunu (secenek 6) kullanarak ag, DNS ve nftables durumunu kontrol edin.
+AUTOTEST_CONNECTING=nfqws calisiyor, baglanti testi yapiliyor...
+CHANGE_PROFILE_RESTART_PROMPT=nfqws su an calisiyor. Yeni profille yeniden baslatilsin mi? [Y/N]:
+DIAG_CURL_MISSING=curl bulunamadi, baglanti testleri atlandi.
+REASON_UNKNOWN_STATE_1=nfqws ne calisir durumda ne de bir cikis kodu birakti.
+LNX_SVC_NOT_RUNNING=Hizmet kuruldu ama nfqws calismiyor. Ayrintilari su komutla gorun:
+
+# ---------- Adim 3: Araclar ----------
+TESTSITE_NOT_RUNNING_WARN=Uyari: nfqws su an calismiyor, bu test bypass olmadan yapilacak.
+SITELIST_RESTART_PROMPT=nfqws su an calisiyor. Degisikligin gecerli olmasi icin yeniden baslatilsin mi? [Y/N]:
+DEBUG_WINWS_STATUS_LABEL=nfqws durumu     :
+LNX_SITE_INVALID=Gecerli bir site adi degil (yalnizca harf, rakam, nokta ve tire kullanin):
+LNX_SITELIST_SAVE_FAIL=Liste dosyasina yazilamadi:

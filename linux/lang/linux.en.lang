@@ -44,7 +44,29 @@ LNX_DIAG_HINT_CERT=certificate error - usually fake DNS answers from the modem
 LNX_DIAG_HINT_RESET=connection reset - DPI block (is Zapret running? does the profile fit your ISP?)
 LNX_DIAG_HINT_TIMEOUT=timed out
 LNX_DIAG_HINT_DNS=name could not be resolved
-LNX_DNS_MANUAL_1=Manual fix for now (NetworkManager), replace CONNECTION with your connection name from: nmcli con show --active
-LNX_DNS_MANUAL_2=sudo nmcli con mod CONNECTION ipv4.ignore-auto-dns yes ipv4.dns 1.1.1.1,1.0.0.1
-LNX_DNS_MANUAL_3=sudo nmcli con mod CONNECTION ipv6.ignore-auto-dns yes
-LNX_DNS_MANUAL_4=sudo nmcli con up CONNECTION
+
+# ---------- Step 2: DNS Assistant, Auto Test, profile marker ----------
+LNX_CURRENT_MARK=current
+LNX_DNS_NO_NM=NetworkManager (nmcli) was not found or is not running, and the DNS Assistant needs it. Set the DNS servers by hand in your network settings: 1.1.1.1 and 1.0.0.1
+LNX_DNS_CONN_UNKNOWN=No connection with that name:
+LNX_DNS_APPLY_FAILED=The DNS settings could not be applied.
+LNX_DNS_UP_FAILED=The connection could not be restarted automatically. The settings are saved - reconnect to the network by hand.
+LNX_DNS_RECONNECT_NOTE=The connection restarts for a moment, Wi-Fi may disconnect briefly.
+LNX_AUTOTEST_DNS_WARN=Warning: your system DNS gives a different address for discord.com than Cloudflare does. Fake DNS answers make every profile FAIL - fix it first with Settings - DNS Assistant, then run the test.
+DNS_CLOUDFLARE_WARN=WARNING: This changes the DNS setting of your network connection (NetworkManager).
+DNS_CLOUDFLARE_INFO_2=you choose it yourself. It can be reverted with Settings - [3].
+AUTOTEST_INFO_1=nfqws will be restarted a few times during this process.
+AUTOTEST_CURL_MISSING=[ERROR] curl was not found. Install it first, for example: sudo apt install curl
+AUTOTEST_NONE_PASSED_HINT=Use the Diagnostics menu (option 6) to check your network, DNS and nftables status.
+AUTOTEST_CONNECTING=nfqws is running, testing connectivity...
+CHANGE_PROFILE_RESTART_PROMPT=nfqws is currently running. Restart it with the new profile? [Y/N]:
+DIAG_CURL_MISSING=curl was not found, connectivity tests skipped.
+REASON_UNKNOWN_STATE_1=nfqws is neither running nor did it leave an exit code.
+LNX_SVC_NOT_RUNNING=The service is installed, but nfqws is not running. See the details with:
+
+# ---------- Step 3: Tools ----------
+TESTSITE_NOT_RUNNING_WARN=Warning: nfqws is not currently running; this test will run without the bypass active.
+SITELIST_RESTART_PROMPT=nfqws is currently running. Restart it now so the change takes effect? [Y/N]:
+DEBUG_WINWS_STATUS_LABEL=nfqws status     :
+LNX_SITE_INVALID=That is not a valid site name (use only letters, digits, dots and hyphens):
+LNX_SITELIST_SAVE_FAIL=Could not write the list file:

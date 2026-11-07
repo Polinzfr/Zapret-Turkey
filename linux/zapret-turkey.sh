@@ -7,7 +7,7 @@
 # (config/settings.conf) ve dil dosyalari Windows surumuyle ortaktir:
 #   <repo>/profiles/*.conf, target-hosts.txt, exclude-hosts.txt
 #   <repo>/lang/en.lang, tr.lang          (ortak metinler)
-#   <repo>/linux/lang/en.lang, tr.lang    (Linux'a ozel metinler)
+#   <repo>/linux/lang/linux.en.lang, linux.tr.lang    (Linux'a ozel metinler)
 #
 # Kullanim:  ./zapret-turkey.sh          (menu)
 #            ./zapret-turkey.sh help     (komutlar)
@@ -41,7 +41,7 @@ else
 fi
 
 # ------------------------------------------------------------
-# Dil (ortak lang/*.lang + linux/lang/*.lang)
+# Dil (ortak lang/*.lang + linux/lang/linux.*.lang)
 # ------------------------------------------------------------
 declare -A L
 
@@ -62,10 +62,10 @@ load_lang() {
     local code="$1"
     L=()
     load_lang_file "$LANG_DIR/en.lang"
-    load_lang_file "$LINUX_LANG_DIR/en.lang"
+    load_lang_file "$LINUX_LANG_DIR/linux.en.lang"
     if [ "$code" != "en" ]; then
         load_lang_file "$LANG_DIR/$code.lang"
-        load_lang_file "$LINUX_LANG_DIR/$code.lang"
+        load_lang_file "$LINUX_LANG_DIR/linux.$code.lang"
     fi
 }
 
